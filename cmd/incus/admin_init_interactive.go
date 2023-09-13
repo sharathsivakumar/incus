@@ -19,18 +19,21 @@ import (
 	"github.com/lxc/incus/incusd/project"
 	"github.com/lxc/incus/incusd/storage/filesystem"
 	"github.com/lxc/incus/incusd/util"
+	cli "github.com/lxc/incus/internal/cmd"
+	"github.com/lxc/incus/internal/idmap"
+	"github.com/lxc/incus/internal/ports"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
-	cli "github.com/lxc/incus/shared/cmd"
-	"github.com/lxc/incus/shared/idmap"
+	"github.com/lxc/incus/shared/subprocess"
+	localtls "github.com/lxc/incus/shared/tls"
 	"github.com/lxc/incus/shared/validate"
-	"github.com/lxc/incus/shared/version"
 )
 
 func (c *cmdAdminInit) RunInteractive(cmd *cobra.Command, args []string, d incus.InstanceServer, server *api.Server) (*api.InitPreseed, error) {
 	// Initialize config
 	config := api.InitPreseed{}
-	config.Node.Config = map[string]any{}
+	config.Node.Config = map[string]string{}
 	config.Node.Networks = []api.InitNetworksProjectPost{}
 	config.Node.StoragePools = []api.StoragePoolsPost{}
 	config.Node.Profiles = []api.ProfilesPost{
@@ -122,7 +125,7 @@ func (c *cmdAdminInit) askClustering(config *api.InitPreseed, d incus.InstanceSe
 		// Cluster server address
 		address := util.NetworkInterfaceAddress()
 		validateServerAddress := func(value string) error {
-			address := util.CanonicalNetworkAddress(value, shared.HTTPSDefaultPort)
+			address := util.CanonicalNetworkAddress(value, ports.HTTPSDefaultPort)
 
 			host, _, _ := net.SplitHostPort(address)
 			if shared.StringInSlice(host, []string{"", "[::]", "0.0.0.0"}) {
@@ -150,7 +153,7 @@ func (c *cmdAdminInit) askClustering(config *api.InitPreseed, d incus.InstanceSe
 			return err
 		}
 
-		serverAddress = util.CanonicalNetworkAddress(serverAddress, shared.HTTPSDefaultPort)
+		serverAddress = util.CanonicalNetworkAddress(serverAddress, ports.HTTPSDefaultPort)
 		config.Node.Config["core.https_address"] = serverAddress
 
 		clusterJoin, err := cli.AskBool("Are you joining an existing cluster? (yes/no) [default=no]: ", "no")
@@ -179,117 +182,42 @@ func (c *cmdAdminInit) askClustering(config *api.InitPreseed, d incus.InstanceSe
 				return nil
 			}
 
-			validInput := func(input string) error {
-				if shared.StringInSlice(strings.ToLower(input), []string{"yes", "y"}) {
-					return nil
-				} else if shared.StringInSlice(strings.ToLower(input), []string{"no", "n"}) {
-					return nil
-				} else if validJoinToken(input) != nil {
-					return fmt.Errorf("Not yes/no, or invalid join token")
-				}
-
-				return nil
-			}
-
-			clusterJoinToken, err := cli.AskString("Do you have a join token? (yes/no/[token]) [default=no]: ", "no", validInput)
+			clusterJoinToken, err := cli.AskString("Please provide join token: ", "", validJoinToken)
 			if err != nil {
 				return err
 			}
 
-			if !shared.StringInSlice(strings.ToLower(clusterJoinToken), []string{"no", "n"}) {
-				if shared.StringInSlice(strings.ToLower(clusterJoinToken), []string{"yes", "y"}) {
-					clusterJoinToken, err = cli.AskString("Please provide join token: ", "", validJoinToken)
-					if err != nil {
-						return err
-					}
-				}
+			// Set server name from join token
+			config.Cluster.ServerName = joinToken.ServerName
 
-				// Set server name from join token
-				config.Cluster.ServerName = joinToken.ServerName
+			// Attempt to find a working cluster member to use for joining by retrieving the
+			// cluster certificate from each address in the join token until we succeed.
+			for _, clusterAddress := range joinToken.Addresses {
+				config.Cluster.ClusterAddress = util.CanonicalNetworkAddress(clusterAddress, ports.HTTPSDefaultPort)
 
-				// Attempt to find a working cluster member to use for joining by retrieving the
-				// cluster certificate from each address in the join token until we succeed.
-				for _, clusterAddress := range joinToken.Addresses {
-					config.Cluster.ClusterAddress = util.CanonicalNetworkAddress(clusterAddress, shared.HTTPSDefaultPort)
-
-					// Cluster certificate
-					cert, err := shared.GetRemoteCertificate(fmt.Sprintf("https://%s", config.Cluster.ClusterAddress), version.UserAgent)
-					if err != nil {
-						fmt.Printf("Error connecting to existing cluster member %q: %v\n", clusterAddress, err)
-						continue
-					}
-
-					certDigest := shared.CertFingerprint(cert)
-					if joinToken.Fingerprint != certDigest {
-						return fmt.Errorf("Certificate fingerprint mismatch between join token and cluster member %q", clusterAddress)
-					}
-
-					config.Cluster.ClusterCertificate = string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cert.Raw}))
-
-					break // We've found a working cluster member.
-				}
-
-				if config.Cluster.ClusterCertificate == "" {
-					return fmt.Errorf("Unable to connect to any of the cluster members specified in join token")
-				}
-
-				// Raw join token used as cluster password so it can be validated.
-				config.Cluster.ClusterPassword = clusterJoinToken
-			} else {
-				// Ask for server name since no token is provided
-				err = askForServerName()
+				// Cluster certificate
+				cert, err := localtls.GetRemoteCertificate(fmt.Sprintf("https://%s", config.Cluster.ClusterAddress), version.UserAgent)
 				if err != nil {
-					return err
+					fmt.Printf("Error connecting to existing cluster member %q: %v\n", clusterAddress, err)
+					continue
 				}
 
-				for {
-					// Cluster URL
-					clusterAddress, err := cli.AskString("IP address or FQDN of an existing cluster member (may include port): ", "", nil)
-					if err != nil {
-						return err
-					}
-
-					config.Cluster.ClusterAddress = util.CanonicalNetworkAddress(clusterAddress, shared.HTTPSDefaultPort)
-
-					// Cluster certificate
-					cert, err := shared.GetRemoteCertificate(fmt.Sprintf("https://%s", config.Cluster.ClusterAddress), version.UserAgent)
-					if err != nil {
-						fmt.Printf("Error connecting to existing cluster member: %v\n", err)
-						continue
-					}
-
-					certDigest := shared.CertFingerprint(cert)
-					fmt.Println("Cluster fingerprint:", certDigest)
-					fmt.Println("You can validate this fingerprint by running \"incus info\" locally on an existing cluster member.")
-
-					validator := func(input string) error {
-						if input == certDigest {
-							return nil
-						} else if shared.StringInSlice(strings.ToLower(input), []string{"yes", "y"}) {
-							return nil
-						} else if shared.StringInSlice(strings.ToLower(input), []string{"no", "n"}) {
-							return nil
-						}
-
-						return fmt.Errorf("Not yes/no or fingerprint")
-					}
-
-					fingerprintCorrect, err := cli.AskString("Is this the correct fingerprint? (yes/no/[fingerprint]) [default=no]: ", "no", validator)
-					if err != nil {
-						return err
-					}
-
-					if shared.StringInSlice(strings.ToLower(fingerprintCorrect), []string{"no", "n"}) {
-						return fmt.Errorf("User aborted configuration")
-					}
-
-					config.Cluster.ClusterCertificate = string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cert.Raw}))
-
-					// Cluster password
-					config.Cluster.ClusterPassword = cli.AskPasswordOnce("Cluster trust password: ")
-					break
+				certDigest := localtls.CertFingerprint(cert)
+				if joinToken.Fingerprint != certDigest {
+					return fmt.Errorf("Certificate fingerprint mismatch between join token and cluster member %q", clusterAddress)
 				}
+
+				config.Cluster.ClusterCertificate = string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cert.Raw}))
+
+				break // We've found a working cluster member.
 			}
+
+			if config.Cluster.ClusterCertificate == "" {
+				return fmt.Errorf("Unable to connect to any of the cluster members specified in join token")
+			}
+
+			// Pass the raw join token.
+			config.Cluster.ClusterToken = clusterJoinToken
 
 			// Confirm wiping
 			clusterWipeMember, err := cli.AskBool("All existing data is lost when joining a cluster, continue? (yes/no) [default=no] ", "no")
@@ -307,14 +235,14 @@ func (c *cmdAdminInit) askClustering(config *api.InitPreseed, d incus.InstanceSe
 				return err
 			}
 
-			err = cluster.SetupTrust(serverCert, config.Cluster.ServerName, config.Cluster.ClusterAddress, config.Cluster.ClusterCertificate, config.Cluster.ClusterPassword)
+			err = cluster.SetupTrust(serverCert, config.Cluster.ServerName, config.Cluster.ClusterAddress, config.Cluster.ClusterCertificate, config.Cluster.ClusterToken)
 			if err != nil {
 				return fmt.Errorf("Failed to setup trust relationship with cluster: %w", err)
 			}
 
 			// Now we have setup trust, don't send to server, othwerwise it will try and setup trust
 			// again and if using a one-time join token, will fail.
-			config.Cluster.ClusterPassword = ""
+			config.Cluster.ClusterToken = ""
 
 			// Client parameters to connect to the target cluster member.
 			args := &incus.ConnectionArgs{
@@ -698,7 +626,7 @@ func (c *cmdAdminInit) askStoragePool(config *api.InitPreseed, d incus.InstanceS
 
 		// Optimization for zfs on zfs (when using Ubuntu's bpool/rpool)
 		if pool.Driver == "zfs" && backingFs == "zfs" {
-			poolName, _ := shared.RunCommand("zpool", "get", "-H", "-o", "value", "name", "rpool")
+			poolName, _ := subprocess.RunCommand("zpool", "get", "-H", "-o", "value", "name", "rpool")
 			if strings.TrimSpace(poolName) == "rpool" {
 				zfsDataset, err := cli.AskBool("Would you like to create a new zfs dataset under rpool/incus? (yes/no) [default=yes]: ", "yes")
 				if err != nil {
@@ -921,8 +849,8 @@ they otherwise would.
 				netAddr = fmt.Sprintf("[%s]", netAddr)
 			}
 
-			netPort, err := cli.AskInt(fmt.Sprintf("Port to bind to [default=%d]: ", shared.HTTPSDefaultPort), 1, 65535, fmt.Sprintf("%d", shared.HTTPSDefaultPort), func(netPort int64) error {
-				address := util.CanonicalNetworkAddressFromAddressAndPort(netAddr, int(netPort), shared.HTTPSDefaultPort)
+			netPort, err := cli.AskInt(fmt.Sprintf("Port to bind to [default=%d]: ", ports.HTTPSDefaultPort), 1, 65535, fmt.Sprintf("%d", ports.HTTPSDefaultPort), func(netPort int64) error {
+				address := util.CanonicalNetworkAddressFromAddressAndPort(netAddr, int(netPort), ports.HTTPSDefaultPort)
 
 				if err == nil {
 					if server.Config["cluster.https_address"] == address || server.Config["core.https_address"] == address {
@@ -943,7 +871,7 @@ they otherwise would.
 				return err
 			}
 
-			config.Node.Config["core.https_address"] = util.CanonicalNetworkAddressFromAddressAndPort(netAddr, int(netPort), shared.HTTPSDefaultPort)
+			config.Node.Config["core.https_address"] = util.CanonicalNetworkAddressFromAddressAndPort(netAddr, int(netPort), ports.HTTPSDefaultPort)
 		}
 	}
 

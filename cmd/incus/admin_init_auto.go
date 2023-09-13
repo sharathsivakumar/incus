@@ -9,6 +9,7 @@ import (
 	"github.com/lxc/incus/incusd/project"
 	storageDrivers "github.com/lxc/incus/incusd/storage/drivers"
 	"github.com/lxc/incus/incusd/util"
+	"github.com/lxc/incus/internal/ports"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
 )
@@ -37,10 +38,6 @@ func (c *cmdAdminInit) RunAuto(cmd *cobra.Command, args []string, d incus.Instan
 		if c.flagNetworkPort != -1 {
 			return nil, fmt.Errorf("--network-port can't be used without --network-address")
 		}
-
-		if c.flagTrustPassword != "" {
-			return nil, fmt.Errorf("--trust-password can't be used without --network-address")
-		}
 	}
 
 	storagePools, err := d.GetStoragePoolNames()
@@ -58,20 +55,16 @@ func (c *cmdAdminInit) RunAuto(cmd *cobra.Command, args []string, d incus.Instan
 	}
 
 	if c.flagNetworkPort == -1 {
-		c.flagNetworkPort = shared.HTTPSDefaultPort
+		c.flagNetworkPort = ports.HTTPSDefaultPort
 	}
 
 	// Fill in the node configuration
 	config := api.InitLocalPreseed{}
-	config.Config = map[string]any{}
+	config.Config = map[string]string{}
 
 	// Network listening
 	if c.flagNetworkAddress != "" {
-		config.Config["core.https_address"] = util.CanonicalNetworkAddressFromAddressAndPort(c.flagNetworkAddress, c.flagNetworkPort, shared.HTTPSDefaultPort)
-
-		if c.flagTrustPassword != "" {
-			config.Config["core.trust_password"] = c.flagTrustPassword
-		}
+		config.Config["core.https_address"] = util.CanonicalNetworkAddressFromAddressAndPort(c.flagNetworkAddress, c.flagNetworkPort, ports.HTTPSDefaultPort)
 	}
 
 	// Storage configuration
