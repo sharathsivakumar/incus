@@ -1,8 +1,8 @@
 package main
 
 import (
-	cli "github.com/lxc/incus/shared/cmd"
-	"github.com/lxc/incus/shared/i18n"
+	cli "github.com/lxc/incus/internal/cmd"
+	"github.com/lxc/incus/internal/i18n"
 	"github.com/spf13/cobra"
 )
 

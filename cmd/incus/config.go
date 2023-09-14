@@ -10,10 +10,10 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/lxc/incus/client"
+	cli "github.com/lxc/incus/internal/cmd"
+	"github.com/lxc/incus/internal/i18n"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
-	cli "github.com/lxc/incus/shared/cmd"
-	"github.com/lxc/incus/shared/i18n"
 	"github.com/lxc/incus/shared/termios"
 )
 
@@ -483,14 +483,6 @@ func (c *cmdConfigGet) Run(cmd *cobra.Command, args []string) error {
 		}
 
 		value := resp.Config[args[len(args)-1]]
-		if value == nil {
-			value = ""
-		} else if value == true {
-			value = "true"
-		} else if value == false {
-			value = "false"
-		}
-
 		fmt.Println(value)
 	}
 
@@ -520,10 +512,7 @@ For backward compatibility, a single configuration key may still be set with:
     Will set a CPU limit of "2" for the instance.
 
 incus config set core.https_address=[::]:8443
-    Will have the server listen on IPv4 and IPv6 port 8443.
-
-incus config set core.trust_password=blah
-    Will set the server's trust password to blah.`))
+    Will have the server listen on IPv4 and IPv6 port 8443.`))
 
 	cmd.Flags().StringVar(&c.config.flagTarget, "target", "", i18n.G("Cluster member name")+"``")
 	cmd.Flags().BoolVarP(&c.flagIsProperty, "property", "p", false, i18n.G("Set the key as an instance property"))
@@ -704,7 +693,7 @@ func (c *cmdConfigSet) Run(cmd *cobra.Command, args []string) error {
 	}
 
 	if server.Config == nil {
-		server.Config = map[string]any{}
+		server.Config = map[string]string{}
 	}
 
 	for k, v := range keys {

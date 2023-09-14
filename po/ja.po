@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LXD\n"
 "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
-"POT-Creation-Date: 2023-08-30 21:06+0200\n"
+"POT-Creation-Date: 2023-09-05 14:50-0400\n"
 "PO-Revision-Date: 2023-03-10 15:14+0000\n"
 "Last-Translator: KATOH Yasufumi <karma@jazz.email.ne.jp>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/linux-"
@@ -96,7 +96,7 @@ msgstr ""
 "### config:\n"
 "###   size: \"61203283968\""
 
-#: cmd/incus/config_trust.go:243
+#: cmd/incus/config_trust.go:284
 msgid ""
 "### This is a YAML representation of the certificate.\n"
 "### Any line starting with a '# will be ignored.\n"
@@ -613,7 +613,7 @@ msgstr "--console は単一のインスタンスのときのみ指定できま�
 msgid "--empty cannot be combined with an image name"
 msgstr "--empty はイメージ名と同時に指定できません"
 
-#: cmd/incus/config.go:468 cmd/incus/config.go:767
+#: cmd/incus/config.go:468 cmd/incus/config.go:764
 msgid "--expanded cannot be used with a server"
 msgstr "--expanded はサーバーでは使えません"
 
@@ -633,8 +633,8 @@ msgstr "--project は query コマンドでは使えません"
 msgid "--refresh can only be used with instances"
 msgstr "--refresh はインスタンスの場合のみ使えます"
 
-#: cmd/incus/config.go:157 cmd/incus/config.go:418 cmd/incus/config.go:594
-#: cmd/incus/config.go:793 cmd/incus/info.go:451
+#: cmd/incus/config.go:157 cmd/incus/config.go:418 cmd/incus/config.go:591
+#: cmd/incus/config.go:790 cmd/incus/info.go:451
 msgid "--target cannot be used with instances"
 msgstr "--target はインスタンスでは使えません"
 
@@ -650,15 +650,15 @@ msgstr "<alias> <target>"
 msgid "<old alias> <new alias>"
 msgstr "<old alias> <new alias>"
 
-#: cmd/incus/remote.go:808 cmd/incus/remote.go:864
+#: cmd/incus/remote.go:799 cmd/incus/remote.go:855
 msgid "<remote>"
 msgstr "<remote>"
 
-#: cmd/incus/remote.go:902
+#: cmd/incus/remote.go:893
 msgid "<remote> <URL>"
 msgstr "<remote> <URL>"
 
-#: cmd/incus/remote.go:737
+#: cmd/incus/remote.go:728
 msgid "<remote> <new-name>"
 msgstr "<remote> <new-name>"
 
@@ -675,6 +675,15 @@ msgstr ""
 #: cmd/incus/manpage.go:19
 msgid "<target>"
 msgstr "<target>"
+
+#: cmd/incus/config_trust.go:120
+msgid "A client name must be provided"
+msgstr ""
+
+#: cmd/incus/cluster.go:826
+#, fuzzy
+msgid "A cluster member name must be provided"
+msgstr "クラスタグループからメンバを削除します"
 
 #: cmd/incus/network_allocations.go:26
 #, fuzzy
@@ -693,11 +702,11 @@ msgstr "ALIASES"
 msgid "ARCHITECTURE"
 msgstr "ARCHITECTURE"
 
-#: cmd/incus/remote.go:720
+#: cmd/incus/remote.go:711
 msgid "AUTH TYPE"
 msgstr "AUTH TYPE"
 
-#: cmd/incus/remote.go:97
+#: cmd/incus/remote.go:96
 msgid "Accept certificate"
 msgstr "証明書を受け入れます"
 
@@ -761,11 +770,11 @@ msgstr "グループからメンバーを削除します"
 msgid "Add new aliases"
 msgstr "新たにエイリアスを追加します"
 
-#: cmd/incus/remote.go:86
+#: cmd/incus/remote.go:85
 msgid "Add new remote servers"
 msgstr "新たにリモートサーバを追加します"
 
-#: cmd/incus/remote.go:87
+#: cmd/incus/remote.go:86
 #, fuzzy
 msgid ""
 "Add new remote servers\n"
@@ -785,37 +794,37 @@ msgstr ""
 "  lxc remote add some-name https://LOGIN:PASSWORD@example.com/some/path --"
 "protocol=simplestreams\n"
 
-#: cmd/incus/config_trust.go:86
+#: cmd/incus/config_trust.go:90
 msgid "Add new trusted client"
 msgstr "新たに信頼済みのクライアントを追加します"
 
-#: cmd/incus/config_trust.go:87
+#: cmd/incus/config_trust.go:170
+#, fuzzy
+msgid "Add new trusted client certificate"
+msgstr "新たに信頼済みのクライアントを追加します"
+
+#: cmd/incus/config_trust.go:171
+#, fuzzy
 msgid ""
-"Add new trusted client\n"
+"Add new trusted client certificate\n"
 "\n"
 "The following certificate types are supported:\n"
 "- client (default)\n"
 "- metrics\n"
-"\n"
-"If the certificate is omitted, a token will be generated and returned. A "
-"client\n"
-"providing a valid token will have its client certificate added to the "
-"trusted list\n"
-"and the consumed token will be invalidated. Similar to certificates, tokens "
-"can be\n"
-"restricted to one or more projects.\n"
 msgstr ""
-"新たに信頼済みクライアントを追加します\n"
+"新たに信頼済みクライアントを追加します。\n"
 "\n"
-"次の証明書タイプがサポートされます:\n"
-"- client（デフォルト）\n"
+"次の証明書タイプをサポートします:\n"
+"- client (デフォルト)\n"
 "- metrics\n"
+
+#: cmd/incus/config_trust.go:91
+msgid ""
+"Add new trusted client\n"
 "\n"
-"証明書が省略された場合、トークンが生成されて返されます。\n"
-"有効なトークンを提供したクライアントは、そのクライアント証明書が信頼済みリス"
-"トに追加され、\n"
-"使ったトークンは無効化されます。\n"
-"証明書と同様に、トークンも 1 つ以上のプロジェクトに制限できます。\n"
+"This will issue a trust token to be used by the client to add itself to the "
+"trust store.\n"
+msgstr ""
 
 #: cmd/incus/network_forward.go:744 cmd/incus/network_forward.go:745
 msgid "Add ports to a forward"
@@ -847,11 +856,6 @@ msgstr "アドレス: %s"
 #, c-format
 msgid "Admin access key: %s"
 msgstr "管理者アクセスキー: %s"
-
-#: cmd/incus/remote.go:553
-#, c-format
-msgid "Admin password (or token) for %s:"
-msgstr "%s の管理者パスワード（もしくはトークン）:"
 
 #: cmd/incus/storage_bucket.go:165
 #, c-format
@@ -886,11 +890,11 @@ msgstr "エイリアス:"
 msgid "All projects"
 msgstr "すべてのプロジェクト"
 
-#: cmd/incus/remote.go:177
+#: cmd/incus/remote.go:176
 msgid "All server addresses are unavailable"
 msgstr "すべてのサーバーアドレスが利用できません"
 
-#: cmd/incus/config_trust.go:102
+#: cmd/incus/config_trust.go:181
 msgid "Alternative certificate name"
 msgstr "別の証明署名"
 
@@ -904,7 +908,7 @@ msgstr "アーキテクチャ: %s"
 msgid "Architecture: %v"
 msgstr "アーキテクチャ: %v"
 
-#: cmd/incus/cluster.go:1222
+#: cmd/incus/cluster.go:1208
 #, c-format
 msgid "Are you sure you want to %s cluster member %q? (yes/no) [default=no]: "
 msgstr ""
@@ -962,7 +966,7 @@ msgstr ""
 "このコマンドはインスタンスのブートコンソールに接続できます。\n"
 "そしてそこから過去のログエントリを取り出すことができます。"
 
-#: cmd/incus/remote.go:539
+#: cmd/incus/remote.go:538
 #, c-format
 msgid "Authentication type '%s' not supported by server"
 msgstr "認証タイプ '%s' はサーバではサポートされていません"
@@ -981,7 +985,7 @@ msgstr "自動更新は pull モードのときのみ有効です"
 msgid "Auto update: %s"
 msgstr "自動更新: %s"
 
-#: cmd/incus/remote.go:132
+#: cmd/incus/remote.go:131
 msgid "Available projects:"
 msgstr "利用可能なプロジェクト:"
 
@@ -1063,7 +1067,7 @@ msgstr "送信バイト数"
 msgid "CANCELABLE"
 msgstr "CANCELABLE"
 
-#: cmd/incus/config_trust.go:408
+#: cmd/incus/config_trust.go:449
 msgid "COMMON NAME"
 msgstr "COMMON NAME"
 
@@ -1137,7 +1141,7 @@ msgstr ""
 msgid "Can't read from stdin: %w"
 msgstr "標準入力から読み込めません: %w"
 
-#: cmd/incus/remote.go:843
+#: cmd/incus/remote.go:834
 msgid "Can't remove the default remote"
 msgstr "デフォルトのリモートは削除できません"
 
@@ -1162,7 +1166,7 @@ msgstr "クラスタでない場合はカラムとして L は指定できませ
 msgid "Can't supply uid/gid/mode in recursive mode"
 msgstr "再帰 (recursive) モードでは uid/gid/mode を指定できません"
 
-#: cmd/incus/config.go:660
+#: cmd/incus/config.go:657
 #, c-format
 msgid "Can't unset key '%s', it's not currently set"
 msgstr "キー '%s' が設定されていないので削除できません"
@@ -1196,10 +1200,6 @@ msgstr ""
 msgid "Cannot set key: %s"
 msgstr "設定キーを設定できません: %s"
 
-#: cmd/incus/config_trust.go:188
-msgid "Cannot use metrics type certificate when using a token"
-msgstr "トークンを使っている時はメトリクスタイプの証明書を使えません"
-
 #: cmd/incus/info.go:401 cmd/incus/info.go:413
 #, c-format
 msgid "Card %d:"
@@ -1210,19 +1210,19 @@ msgstr "カード %d:"
 msgid "Card: %s (%s)"
 msgstr "カード: %s (%s)"
 
-#: cmd/incus/config_trust.go:628
+#: cmd/incus/config_trust.go:669
 #, c-format
 msgid "Certificate add token for %s deleted"
 msgstr "%s に対する証明書追加トークンが削除されました"
 
-#: cmd/incus/remote.go:214
+#: cmd/incus/remote.go:213
 #, c-format
 msgid ""
 "Certificate fingerprint mismatch between certificate token and server %q"
 msgstr ""
 "証明書のフィンガープリントが証明書トークンとサーバの間で一致しません %q"
 
-#: cmd/incus/remote.go:442
+#: cmd/incus/remote.go:441
 #, c-format
 msgid "Certificate fingerprint: %s"
 msgstr "証明書のフィンガープリント: %s"
@@ -1231,12 +1231,12 @@ msgstr "証明書のフィンガープリント: %s"
 msgid "Chassis"
 msgstr "Chassis"
 
-#: cmd/incus/config_trust.go:212
+#: cmd/incus/config_trust.go:147
 #, c-format
 msgid "Client %s certificate add token:"
 msgstr "クライアント %s の証明書追加トークン:"
 
-#: cmd/incus/remote.go:593
+#: cmd/incus/remote.go:584
 msgid "Client certificate now trusted by server:"
 msgstr "クライアント証明書がサーバに信頼されました:"
 
@@ -1265,7 +1265,7 @@ msgstr "クラスターグループ %s は現在 %s に適用されていませ�
 msgid "Cluster group %s renamed to %s"
 msgstr "クラスタグループ名 %s を %s に変更しました"
 
-#: cmd/incus/cluster.go:1040
+#: cmd/incus/cluster.go:1026
 #, c-format
 msgid "Cluster join token for %s:%s deleted"
 msgstr "%s:%s のクラスターに join するためのトークンが削除されました"
@@ -1290,8 +1290,8 @@ msgstr "クラスターメンバー %s がグループ %s から削除されま�
 msgid "Cluster member %s removed from group %s"
 msgstr "クラスターメンバー %s がグループ %s から削除されました"
 
-#: cmd/incus/config.go:101 cmd/incus/config.go:385 cmd/incus/config.go:528
-#: cmd/incus/config.go:734 cmd/incus/config.go:857 cmd/incus/copy.go:60
+#: cmd/incus/config.go:101 cmd/incus/config.go:385 cmd/incus/config.go:525
+#: cmd/incus/config.go:731 cmd/incus/config.go:854 cmd/incus/copy.go:60
 #: cmd/incus/info.go:45 cmd/incus/init.go:55 cmd/incus/move.go:64
 #: cmd/incus/network.go:300 cmd/incus/network.go:723 cmd/incus/network.go:792
 #: cmd/incus/network.go:1134 cmd/incus/network.go:1219
@@ -1327,14 +1327,6 @@ msgstr "クラスターメンバー %s がグループ %s から削除されま�
 #: cmd/incus/storage_volume.go:2527 cmd/incus/storage_volume.go:2679
 msgid "Cluster member name"
 msgstr "クラスタメンバ名"
-
-#: cmd/incus/cluster.go:805
-msgid "Cluster member name (alternative to passing it as an argument)"
-msgstr ""
-
-#: cmd/incus/cluster.go:829
-msgid "Cluster member name was provided as both a flag and as an argument"
-msgstr ""
 
 #: cmd/incus/cluster.go:675
 msgid "Clustering enabled"
@@ -1386,7 +1378,7 @@ msgstr "移動先のインスタンスに適用するキー/値の設定"
 
 #: cmd/incus/cluster.go:770 cmd/incus/cluster_group.go:339
 #: cmd/incus/config.go:268 cmd/incus/config.go:343
-#: cmd/incus/config_metadata.go:147 cmd/incus/config_trust.go:312
+#: cmd/incus/config_metadata.go:147 cmd/incus/config_trust.go:353
 #: cmd/incus/image.go:456 cmd/incus/network.go:686 cmd/incus/network_acl.go:620
 #: cmd/incus/network_forward.go:635 cmd/incus/network_load_balancer.go:637
 #: cmd/incus/network_peer.go:610 cmd/incus/network_zone.go:551
@@ -1521,41 +1513,41 @@ msgstr "コア %d"
 msgid "Cores:"
 msgstr "コア:"
 
-#: cmd/incus/remote.go:477
+#: cmd/incus/remote.go:476
 #, c-format
 msgid "Could not close server cert file %q: %w"
 msgstr "サーバ証明書ファイル %q をクローズできません: %w"
 
-#: cmd/incus/remote.go:220 cmd/incus/remote.go:461
+#: cmd/incus/remote.go:219 cmd/incus/remote.go:460
 msgid "Could not create server cert dir"
 msgstr "サーバ証明書格納用のディレクトリを作成できません"
 
-#: cmd/incus/cluster.go:1104
+#: cmd/incus/cluster.go:1090
 #, c-format
 msgid "Could not find certificate file path: %s"
 msgstr "証明書のファイルパスが見つかりません: %s"
 
-#: cmd/incus/cluster.go:1108
+#: cmd/incus/cluster.go:1094
 #, c-format
 msgid "Could not find certificate key file path: %s"
 msgstr "証明書の鍵のパスが見つかりません: %s"
 
-#: cmd/incus/cluster.go:1113
+#: cmd/incus/cluster.go:1099
 #, c-format
 msgid "Could not read certificate file: %s with error: %v"
 msgstr "証明書ファイル %s をエラーで読み込めません: %v"
 
-#: cmd/incus/cluster.go:1118
+#: cmd/incus/cluster.go:1104
 #, c-format
 msgid "Could not read certificate key file: %s with error: %v"
 msgstr "秘密鍵ファイル %s をエラーで読み込めません: %v"
 
-#: cmd/incus/cluster.go:1135
+#: cmd/incus/cluster.go:1121
 #, c-format
 msgid "Could not write new remote certificate for remote '%s' with error: %v"
 msgstr "リモート '%s' に対する新しいリモート証明書がエラーで書き込めません: %v"
 
-#: cmd/incus/remote.go:472
+#: cmd/incus/remote.go:471
 #, c-format
 msgid "Could not write server cert file %q: %w"
 msgstr "サーバ証明書ファイル %q を書き込めません: %w"
@@ -1833,9 +1825,9 @@ msgstr "警告を削除します"
 #: cmd/incus/cluster.go:29 cmd/incus/cluster.go:122 cmd/incus/cluster.go:206
 #: cmd/incus/cluster.go:255 cmd/incus/cluster.go:306 cmd/incus/cluster.go:367
 #: cmd/incus/cluster.go:439 cmd/incus/cluster.go:471 cmd/incus/cluster.go:521
-#: cmd/incus/cluster.go:604 cmd/incus/cluster.go:689 cmd/incus/cluster.go:804
-#: cmd/incus/cluster.go:880 cmd/incus/cluster.go:982 cmd/incus/cluster.go:1061
-#: cmd/incus/cluster.go:1168 cmd/incus/cluster.go:1189
+#: cmd/incus/cluster.go:604 cmd/incus/cluster.go:689 cmd/incus/cluster.go:802
+#: cmd/incus/cluster.go:866 cmd/incus/cluster.go:968 cmd/incus/cluster.go:1047
+#: cmd/incus/cluster.go:1154 cmd/incus/cluster.go:1175
 #: cmd/incus/cluster_group.go:30 cmd/incus/cluster_group.go:84
 #: cmd/incus/cluster_group.go:157 cmd/incus/cluster_group.go:214
 #: cmd/incus/cluster_group.go:266 cmd/incus/cluster_group.go:382
@@ -1843,8 +1835,8 @@ msgstr "警告を削除します"
 #: cmd/incus/cluster_group.go:577 cmd/incus/cluster_group.go:631
 #: cmd/incus/cluster_role.go:23 cmd/incus/cluster_role.go:50
 #: cmd/incus/cluster_role.go:106 cmd/incus/config.go:32 cmd/incus/config.go:95
-#: cmd/incus/config.go:380 cmd/incus/config.go:513 cmd/incus/config.go:730
-#: cmd/incus/config.go:854 cmd/incus/config_device.go:24
+#: cmd/incus/config.go:380 cmd/incus/config.go:513 cmd/incus/config.go:727
+#: cmd/incus/config.go:851 cmd/incus/config_device.go:24
 #: cmd/incus/config_device.go:78 cmd/incus/config_device.go:208
 #: cmd/incus/config_device.go:285 cmd/incus/config_device.go:356
 #: cmd/incus/config_device.go:450 cmd/incus/config_device.go:548
@@ -1854,45 +1846,45 @@ msgstr "警告を削除します"
 #: cmd/incus/config_template.go:27 cmd/incus/config_template.go:67
 #: cmd/incus/config_template.go:110 cmd/incus/config_template.go:152
 #: cmd/incus/config_template.go:240 cmd/incus/config_template.go:300
-#: cmd/incus/config_trust.go:34 cmd/incus/config_trust.go:87
-#: cmd/incus/config_trust.go:234 cmd/incus/config_trust.go:348
-#: cmd/incus/config_trust.go:430 cmd/incus/config_trust.go:532
-#: cmd/incus/config_trust.go:578 cmd/incus/config_trust.go:649
-#: cmd/incus/console.go:36 cmd/incus/copy.go:40 cmd/incus/delete.go:31
-#: cmd/incus/exec.go:41 cmd/incus/export.go:32 cmd/incus/file.go:78
-#: cmd/incus/file.go:118 cmd/incus/file.go:167 cmd/incus/file.go:237
-#: cmd/incus/file.go:456 cmd/incus/file.go:960 cmd/incus/image.go:37
-#: cmd/incus/image.go:145 cmd/incus/image.go:312 cmd/incus/image.go:363
-#: cmd/incus/image.go:490 cmd/incus/image.go:650 cmd/incus/image.go:883
-#: cmd/incus/image.go:1018 cmd/incus/image.go:1337 cmd/incus/image.go:1417
-#: cmd/incus/image.go:1476 cmd/incus/image.go:1528 cmd/incus/image.go:1584
-#: cmd/incus/image_alias.go:24 cmd/incus/image_alias.go:60
-#: cmd/incus/image_alias.go:107 cmd/incus/image_alias.go:152
-#: cmd/incus/image_alias.go:255 cmd/incus/import.go:27 cmd/incus/info.go:33
-#: cmd/incus/init.go:40 cmd/incus/launch.go:24 cmd/incus/list.go:49
-#: cmd/incus/main.go:79 cmd/incus/manpage.go:21 cmd/incus/monitor.go:33
-#: cmd/incus/move.go:35 cmd/incus/network.go:32 cmd/incus/network.go:135
-#: cmd/incus/network.go:220 cmd/incus/network.go:293 cmd/incus/network.go:372
-#: cmd/incus/network.go:422 cmd/incus/network.go:507 cmd/incus/network.go:592
-#: cmd/incus/network.go:720 cmd/incus/network.go:789 cmd/incus/network.go:912
-#: cmd/incus/network.go:1005 cmd/incus/network.go:1076
-#: cmd/incus/network.go:1128 cmd/incus/network.go:1216
-#: cmd/incus/network.go:1280 cmd/incus/network_acl.go:29
-#: cmd/incus/network_acl.go:94 cmd/incus/network_acl.go:165
-#: cmd/incus/network_acl.go:218 cmd/incus/network_acl.go:266
-#: cmd/incus/network_acl.go:327 cmd/incus/network_acl.go:412
-#: cmd/incus/network_acl.go:492 cmd/incus/network_acl.go:522
-#: cmd/incus/network_acl.go:653 cmd/incus/network_acl.go:702
-#: cmd/incus/network_acl.go:751 cmd/incus/network_acl.go:766
-#: cmd/incus/network_acl.go:887 cmd/incus/network_allocations.go:52
-#: cmd/incus/network_forward.go:29 cmd/incus/network_forward.go:86
-#: cmd/incus/network_forward.go:167 cmd/incus/network_forward.go:231
-#: cmd/incus/network_forward.go:329 cmd/incus/network_forward.go:398
-#: cmd/incus/network_forward.go:496 cmd/incus/network_forward.go:526
-#: cmd/incus/network_forward.go:668 cmd/incus/network_forward.go:730
-#: cmd/incus/network_forward.go:745 cmd/incus/network_forward.go:810
-#: cmd/incus/network_load_balancer.go:29 cmd/incus/network_load_balancer.go:90
-#: cmd/incus/network_load_balancer.go:169
+#: cmd/incus/config_trust.go:34 cmd/incus/config_trust.go:91
+#: cmd/incus/config_trust.go:171 cmd/incus/config_trust.go:275
+#: cmd/incus/config_trust.go:389 cmd/incus/config_trust.go:471
+#: cmd/incus/config_trust.go:573 cmd/incus/config_trust.go:619
+#: cmd/incus/config_trust.go:690 cmd/incus/console.go:36 cmd/incus/copy.go:40
+#: cmd/incus/delete.go:31 cmd/incus/exec.go:41 cmd/incus/export.go:32
+#: cmd/incus/file.go:78 cmd/incus/file.go:118 cmd/incus/file.go:167
+#: cmd/incus/file.go:237 cmd/incus/file.go:456 cmd/incus/file.go:960
+#: cmd/incus/image.go:37 cmd/incus/image.go:145 cmd/incus/image.go:312
+#: cmd/incus/image.go:363 cmd/incus/image.go:490 cmd/incus/image.go:650
+#: cmd/incus/image.go:883 cmd/incus/image.go:1018 cmd/incus/image.go:1337
+#: cmd/incus/image.go:1417 cmd/incus/image.go:1476 cmd/incus/image.go:1528
+#: cmd/incus/image.go:1584 cmd/incus/image_alias.go:24
+#: cmd/incus/image_alias.go:60 cmd/incus/image_alias.go:107
+#: cmd/incus/image_alias.go:152 cmd/incus/image_alias.go:255
+#: cmd/incus/import.go:27 cmd/incus/info.go:33 cmd/incus/init.go:40
+#: cmd/incus/launch.go:24 cmd/incus/list.go:49 cmd/incus/main.go:79
+#: cmd/incus/manpage.go:21 cmd/incus/monitor.go:33 cmd/incus/move.go:35
+#: cmd/incus/network.go:32 cmd/incus/network.go:135 cmd/incus/network.go:220
+#: cmd/incus/network.go:293 cmd/incus/network.go:372 cmd/incus/network.go:422
+#: cmd/incus/network.go:507 cmd/incus/network.go:592 cmd/incus/network.go:720
+#: cmd/incus/network.go:789 cmd/incus/network.go:912 cmd/incus/network.go:1005
+#: cmd/incus/network.go:1076 cmd/incus/network.go:1128
+#: cmd/incus/network.go:1216 cmd/incus/network.go:1280
+#: cmd/incus/network_acl.go:29 cmd/incus/network_acl.go:94
+#: cmd/incus/network_acl.go:165 cmd/incus/network_acl.go:218
+#: cmd/incus/network_acl.go:266 cmd/incus/network_acl.go:327
+#: cmd/incus/network_acl.go:412 cmd/incus/network_acl.go:492
+#: cmd/incus/network_acl.go:522 cmd/incus/network_acl.go:653
+#: cmd/incus/network_acl.go:702 cmd/incus/network_acl.go:751
+#: cmd/incus/network_acl.go:766 cmd/incus/network_acl.go:887
+#: cmd/incus/network_allocations.go:52 cmd/incus/network_forward.go:29
+#: cmd/incus/network_forward.go:86 cmd/incus/network_forward.go:167
+#: cmd/incus/network_forward.go:231 cmd/incus/network_forward.go:329
+#: cmd/incus/network_forward.go:398 cmd/incus/network_forward.go:496
+#: cmd/incus/network_forward.go:526 cmd/incus/network_forward.go:668
+#: cmd/incus/network_forward.go:730 cmd/incus/network_forward.go:745
+#: cmd/incus/network_forward.go:810 cmd/incus/network_load_balancer.go:29
+#: cmd/incus/network_load_balancer.go:90 cmd/incus/network_load_balancer.go:169
 #: cmd/incus/network_load_balancer.go:233
 #: cmd/incus/network_load_balancer.go:331
 #: cmd/incus/network_load_balancer.go:399
@@ -1931,9 +1923,9 @@ msgstr "警告を削除します"
 #: cmd/incus/project.go:523 cmd/incus/project.go:580 cmd/incus/project.go:659
 #: cmd/incus/project.go:690 cmd/incus/project.go:743 cmd/incus/project.go:802
 #: cmd/incus/publish.go:32 cmd/incus/query.go:34 cmd/incus/rebuild.go:27
-#: cmd/incus/remote.go:33 cmd/incus/remote.go:87 cmd/incus/remote.go:620
-#: cmd/incus/remote.go:656 cmd/incus/remote.go:740 cmd/incus/remote.go:811
-#: cmd/incus/remote.go:866 cmd/incus/remote.go:904 cmd/incus/rename.go:21
+#: cmd/incus/remote.go:32 cmd/incus/remote.go:86 cmd/incus/remote.go:611
+#: cmd/incus/remote.go:647 cmd/incus/remote.go:731 cmd/incus/remote.go:802
+#: cmd/incus/remote.go:857 cmd/incus/remote.go:895 cmd/incus/rename.go:21
 #: cmd/incus/snapshot.go:27 cmd/incus/snapshot.go:70 cmd/incus/snapshot.go:169
 #: cmd/incus/snapshot.go:256 cmd/incus/snapshot.go:354
 #: cmd/incus/snapshot.go:403 cmd/incus/storage.go:33 cmd/incus/storage.go:96
@@ -2115,11 +2107,11 @@ msgstr "ENTRIES"
 msgid "EPHEMERAL"
 msgstr "EPHEMERAL"
 
-#: cmd/incus/cluster.go:966 cmd/incus/config_trust.go:514
+#: cmd/incus/cluster.go:952 cmd/incus/config_trust.go:555
 msgid "EXPIRES AT"
 msgstr "EXPIRES AT"
 
-#: cmd/incus/config_trust.go:411
+#: cmd/incus/config_trust.go:452
 msgid "EXPIRY DATE"
 msgstr "EXPIRY DATE"
 
@@ -2212,7 +2204,7 @@ msgstr "ストレージプールの設定をYAMLで編集します"
 msgid "Edit storage volume configurations as YAML"
 msgstr "ストレージボリュームの設定をYAMLで編集します"
 
-#: cmd/incus/config_trust.go:233 cmd/incus/config_trust.go:234
+#: cmd/incus/config_trust.go:274 cmd/incus/config_trust.go:275
 msgid "Edit trust configurations as YAML"
 msgstr "信頼済みクライアント設定をYAMLで編集します"
 
@@ -2280,7 +2272,7 @@ msgstr "イメージの取得中: %s"
 msgid "Error retrieving aliases: %w"
 msgstr "イメージの取得中: %s"
 
-#: cmd/incus/cluster.go:414 cmd/incus/config.go:620 cmd/incus/config.go:652
+#: cmd/incus/cluster.go:414 cmd/incus/config.go:617 cmd/incus/config.go:649
 #: cmd/incus/network.go:1194 cmd/incus/network_acl.go:467
 #: cmd/incus/network_forward.go:469 cmd/incus/network_load_balancer.go:470
 #: cmd/incus/network_peer.go:463 cmd/incus/network_zone.go:409
@@ -2292,7 +2284,7 @@ msgstr "イメージの取得中: %s"
 msgid "Error setting properties: %v"
 msgstr "イメージの取得中: %s"
 
-#: cmd/incus/config.go:614 cmd/incus/config.go:646
+#: cmd/incus/config.go:611 cmd/incus/config.go:643
 #, fuzzy, c-format
 msgid "Error unsetting properties: %v"
 msgstr "イメージのプロパティを削除します"
@@ -2313,11 +2305,11 @@ msgstr ""
 msgid "Error updating template file: %s"
 msgstr "テンプレートファイル更新のエラー: %s"
 
-#: cmd/incus/cluster.go:1167 cmd/incus/cluster.go:1168
+#: cmd/incus/cluster.go:1153 cmd/incus/cluster.go:1154
 msgid "Evacuate cluster member"
 msgstr "クラスターのメンバーを待避させます"
 
-#: cmd/incus/cluster.go:1247
+#: cmd/incus/cluster.go:1233
 #, c-format
 msgid "Evacuating cluster member: %s"
 msgstr "クラスターメンバーを待避させています: %s"
@@ -2421,7 +2413,7 @@ msgstr "FAILURE DOMAIN"
 msgid "FILENAME"
 msgstr "FILENAME"
 
-#: cmd/incus/config_trust.go:409 cmd/incus/image.go:1054
+#: cmd/incus/config_trust.go:450 cmd/incus/image.go:1054
 #: cmd/incus/image.go:1055 cmd/incus/image_alias.go:235
 msgid "FINGERPRINT"
 msgstr "FINGERPRINT"
@@ -2460,7 +2452,7 @@ msgstr "クライアント %q に対する SFTP インスタンスの接続に�
 msgid "Failed connecting to instance SFTP: %w"
 msgstr "インスタンスの SFTP への接続に失敗しました: %w"
 
-#: cmd/incus/config_trust.go:208
+#: cmd/incus/config_trust.go:143
 #, c-format
 msgid "Failed converting token operation to certificate add token: %w"
 msgstr "証明書追加トークンのトークン変換操作に失敗しました: %w"
@@ -2500,11 +2492,11 @@ msgstr "sshfs の起動に失敗しました: %w"
 msgid "Failed to accept incoming connection: %w"
 msgstr "受信接続の受け入れに失敗しました: %w"
 
-#: cmd/incus/remote.go:186
+#: cmd/incus/remote.go:185
 msgid "Failed to add remote"
 msgstr "リモートの追加に失敗しました"
 
-#: cmd/incus/remote.go:237
+#: cmd/incus/remote.go:236
 #, c-format
 msgid "Failed to close server cert file %q: %w"
 msgstr "サーバー証明書ファイル %q のクローズに失敗しました: %w"
@@ -2514,7 +2506,7 @@ msgstr "サーバー証明書ファイル %q のクローズに失敗しまし�
 msgid "Failed to connect to cluster member: %w"
 msgstr "クラスタメンバへの接続に失敗しました: %w"
 
-#: cmd/incus/remote.go:227
+#: cmd/incus/remote.go:226
 #, c-format
 msgid "Failed to create %q: %w"
 msgstr "%q の作成に失敗しました: %w"
@@ -2524,12 +2516,12 @@ msgstr "%q の作成に失敗しました: %w"
 msgid "Failed to create alias %s: %w"
 msgstr "エイリアス %s の作成に失敗しました: %w"
 
-#: cmd/incus/remote.go:252
+#: cmd/incus/remote.go:251
 #, c-format
 msgid "Failed to create certificate: %w"
 msgstr "証明書の作成に失敗しました: %w"
 
-#: cmd/incus/remote.go:259
+#: cmd/incus/remote.go:258
 #, c-format
 msgid "Failed to find project: %w"
 msgstr "プロジェクトが見つけられませんでした: %w"
@@ -2558,7 +2550,7 @@ msgstr "エイリアス %s の削除に失敗しました: %w"
 msgid "Failed to walk path for %s: %s"
 msgstr "パス %s にアクセスできませんでした: %s"
 
-#: cmd/incus/remote.go:232
+#: cmd/incus/remote.go:231
 #, c-format
 msgid "Failed to write server cert file %q: %w"
 msgstr "サーバー証明書 %q の書き込みに失敗しました: %w"
@@ -2577,11 +2569,11 @@ msgstr "情報表示のフィルタリングはまだサポートされていま
 msgid "Fingerprint: %s"
 msgstr "証明書のフィンガープリント: %s"
 
-#: cmd/incus/cluster.go:1170
+#: cmd/incus/cluster.go:1156
 msgid "Force a particular evacuation action"
 msgstr "特定の待避アクションを強制します"
 
-#: cmd/incus/cluster.go:1197
+#: cmd/incus/cluster.go:1183
 msgid "Force evacuation without user confirmation"
 msgstr "ユーザーの確認なしで強制的に待避させます"
 
@@ -2644,9 +2636,9 @@ msgstr ""
 "\n"
 "本当に強制的に %s を削除してもよろしいですか? (yes/no): "
 
-#: cmd/incus/alias.go:112 cmd/incus/cluster.go:124 cmd/incus/cluster.go:881
+#: cmd/incus/alias.go:112 cmd/incus/cluster.go:124 cmd/incus/cluster.go:867
 #: cmd/incus/cluster_group.go:384 cmd/incus/config_template.go:242
-#: cmd/incus/config_trust.go:350 cmd/incus/config_trust.go:432
+#: cmd/incus/config_trust.go:391 cmd/incus/config_trust.go:473
 #: cmd/incus/image.go:1044 cmd/incus/image_alias.go:157 cmd/incus/list.go:133
 #: cmd/incus/network.go:916 cmd/incus/network.go:1007
 #: cmd/incus/network_acl.go:97 cmd/incus/network_allocations.go:58
@@ -2654,7 +2646,7 @@ msgstr ""
 #: cmd/incus/network_peer.go:84 cmd/incus/network_zone.go:88
 #: cmd/incus/network_zone.go:692 cmd/incus/operation.go:106
 #: cmd/incus/profile.go:617 cmd/incus/project.go:412 cmd/incus/project.go:804
-#: cmd/incus/remote.go:660 cmd/incus/snapshot.go:259 cmd/incus/storage.go:588
+#: cmd/incus/remote.go:651 cmd/incus/snapshot.go:259 cmd/incus/storage.go:588
 #: cmd/incus/storage_bucket.go:454 cmd/incus/storage_bucket.go:769
 #: cmd/incus/storage_volume.go:1400 cmd/incus/storage_volume.go:2208
 #: cmd/incus/warning.go:93
@@ -2694,7 +2686,7 @@ msgstr "クロック数: %vMhz"
 msgid "Frequency: %vMhz (min: %vMhz, max: %vMhz)"
 msgstr "クロック数: %vMhz (最小: %vMhz, 最大: %vMhz)"
 
-#: cmd/incus/remote.go:723
+#: cmd/incus/remote.go:714
 msgid "GLOBAL"
 msgstr "GLOBAL"
 
@@ -2710,7 +2702,7 @@ msgstr "GPUs:"
 msgid "Generate manpages for all commands"
 msgstr "すべてのコマンドに対する man ページを作成します"
 
-#: cmd/incus/remote.go:155 cmd/incus/remote.go:388
+#: cmd/incus/remote.go:154 cmd/incus/remote.go:387
 msgid "Generating a client certificate. This may take a minute..."
 msgstr "クライアント証明書を生成します。1分ぐらいかかります..."
 
@@ -2936,7 +2928,7 @@ msgstr "IPV4"
 msgid "IPV6"
 msgstr "IPV6"
 
-#: cmd/incus/config_trust.go:410
+#: cmd/incus/config_trust.go:451
 msgid "ISSUE DATE"
 msgstr "ISSUE DATE"
 
@@ -3119,7 +3111,7 @@ msgstr "インスタンス名: %s"
 msgid "Instance type"
 msgstr "インスタンスタイプ"
 
-#: cmd/incus/remote.go:340
+#: cmd/incus/remote.go:339
 #, c-format
 msgid "Invalid URL scheme \"%s\" in \"%s\""
 msgstr "不正な URL スキーム \"%s\" (\"%s\" 内)"
@@ -3129,7 +3121,7 @@ msgstr "不正な URL スキーム \"%s\" (\"%s\" 内)"
 msgid "Invalid argument %q"
 msgstr "不正な引数 %q"
 
-#: cmd/incus/config_trust.go:389
+#: cmd/incus/config_trust.go:430
 msgid "Invalid certificate"
 msgstr "不正な証明書です"
 
@@ -3192,7 +3184,7 @@ msgstr "引数の数が不正です"
 msgid "Invalid path %s"
 msgstr "不正なパス %s"
 
-#: cmd/incus/remote.go:329
+#: cmd/incus/remote.go:328
 #, c-format
 msgid "Invalid protocol: %s"
 msgstr "不正なプロトコル: %s"
@@ -3277,11 +3269,11 @@ msgstr "DHCP のリースを一覧表示します"
 msgid "List aliases"
 msgstr "エイリアスを一覧表示します"
 
-#: cmd/incus/config_trust.go:429 cmd/incus/config_trust.go:430
+#: cmd/incus/config_trust.go:470 cmd/incus/config_trust.go:471
 msgid "List all active certificate add tokens"
 msgstr "有効な証明書追加トークンをすべて一覧表示します"
 
-#: cmd/incus/cluster.go:879 cmd/incus/cluster.go:880
+#: cmd/incus/cluster.go:865 cmd/incus/cluster.go:866
 msgid "List all active cluster member join tokens"
 msgstr "有効なクラスターへの join トークンをすべて一覧表示します"
 
@@ -3593,7 +3585,7 @@ msgstr ""
 msgid "List network allocations in use"
 msgstr "ネットワーク設定をYAMLで編集します"
 
-#: cmd/incus/config_trust.go:101
+#: cmd/incus/config_trust.go:98 cmd/incus/config_trust.go:180
 msgid "List of projects to restrict the certificate to"
 msgstr "証明書の使用を制限するプロジェクトのリスト"
 
@@ -3688,11 +3680,11 @@ msgstr ""
 "    u - （使用中の）リファレンス数\n"
 "    U - 現在のディスク使用量"
 
-#: cmd/incus/remote.go:655 cmd/incus/remote.go:656
+#: cmd/incus/remote.go:646 cmd/incus/remote.go:647
 msgid "List the available remotes"
 msgstr "利用可能なリモートサーバを一覧表示します"
 
-#: cmd/incus/config_trust.go:347 cmd/incus/config_trust.go:348
+#: cmd/incus/config_trust.go:388 cmd/incus/config_trust.go:389
 msgid "List trusted clients"
 msgstr "信頼済みクライアントを一覧表示します"
 
@@ -4012,7 +4004,7 @@ msgstr ""
 "プレフィックスで指定しない限りは、ボリュームに対する操作はすべて \"カスタム"
 "\" (ユーザが作成した) ボリュームに対して行われます。"
 
-#: cmd/incus/remote.go:32 cmd/incus/remote.go:33
+#: cmd/incus/remote.go:31 cmd/incus/remote.go:32
 msgid "Manage the list of remote servers"
 msgstr "リモートサーバのリストを管理します"
 
@@ -4043,7 +4035,7 @@ msgstr "メンバー %q はすでにロール %q を持っています"
 msgid "Member %q does not have role %q"
 msgstr "メンバー %q はロール %q を持っていません"
 
-#: cmd/incus/cluster.go:860
+#: cmd/incus/cluster.go:846
 #, c-format
 msgid "Member %s join token:"
 msgstr "メンバ %s の join トークン:"
@@ -4098,7 +4090,7 @@ msgstr "ログメッセージの最小レベル（pretty フォーマット使�
 msgid "Missing bucket name"
 msgstr "バケット名を指定する必要があります"
 
-#: cmd/incus/config_trust.go:266 cmd/incus/config_trust.go:674
+#: cmd/incus/config_trust.go:307 cmd/incus/config_trust.go:715
 msgid "Missing certificate fingerprint"
 msgstr "証明書のフィンガープリントがありません"
 
@@ -4107,7 +4099,7 @@ msgstr "証明書のフィンガープリントがありません"
 msgid "Missing cluster group name"
 msgstr "クラスターグループ名がありません"
 
-#: cmd/incus/cluster.go:722 cmd/incus/cluster.go:1218
+#: cmd/incus/cluster.go:722 cmd/incus/cluster.go:1204
 #: cmd/incus/cluster_group.go:116 cmd/incus/cluster_group.go:481
 #: cmd/incus/cluster_group.go:655 cmd/incus/cluster_role.go:73
 #: cmd/incus/cluster_role.go:129
@@ -4370,12 +4362,12 @@ msgstr "ディレクトリからのインポートは root で実行する必要
 msgid "Must supply instance name for: "
 msgstr "インスタンス名を指定する必要があります: "
 
-#: cmd/incus/cluster.go:183 cmd/incus/cluster.go:964
-#: cmd/incus/cluster_group.go:437 cmd/incus/config_trust.go:407
-#: cmd/incus/config_trust.go:512 cmd/incus/list.go:565 cmd/incus/network.go:980
+#: cmd/incus/cluster.go:183 cmd/incus/cluster.go:950
+#: cmd/incus/cluster_group.go:437 cmd/incus/config_trust.go:448
+#: cmd/incus/config_trust.go:553 cmd/incus/list.go:565 cmd/incus/network.go:980
 #: cmd/incus/network_acl.go:147 cmd/incus/network_peer.go:139
 #: cmd/incus/network_zone.go:138 cmd/incus/network_zone.go:741
-#: cmd/incus/profile.go:657 cmd/incus/project.go:498 cmd/incus/remote.go:717
+#: cmd/incus/profile.go:657 cmd/incus/project.go:498 cmd/incus/remote.go:708
 #: cmd/incus/storage.go:638 cmd/incus/storage_bucket.go:506
 #: cmd/incus/storage_bucket.go:826 cmd/incus/storage_volume.go:1488
 msgid "NAME"
@@ -4403,8 +4395,8 @@ msgstr "NICs:"
 
 #: cmd/incus/network.go:957 cmd/incus/operation.go:145 cmd/incus/project.go:456
 #: cmd/incus/project.go:461 cmd/incus/project.go:466 cmd/incus/project.go:471
-#: cmd/incus/project.go:476 cmd/incus/project.go:481 cmd/incus/remote.go:677
-#: cmd/incus/remote.go:682 cmd/incus/remote.go:687
+#: cmd/incus/project.go:476 cmd/incus/project.go:481 cmd/incus/remote.go:668
+#: cmd/incus/remote.go:673 cmd/incus/remote.go:678
 msgid "NO"
 msgstr "NO"
 
@@ -4432,7 +4424,7 @@ msgstr "NVRM バージョン: %v"
 msgid "Name"
 msgstr "名前"
 
-#: cmd/incus/remote.go:137
+#: cmd/incus/remote.go:136
 msgid "Name of the project to use for this remote:"
 msgstr "このリモートで使うプロジェクト名:"
 
@@ -4569,12 +4561,12 @@ msgstr "イメージに新しいエイリアスを追加します"
 msgid "New key/value to apply to a specific device"
 msgstr "指定するデバイスに適用する新しいキー/値"
 
-#: cmd/incus/config_trust.go:635
+#: cmd/incus/config_trust.go:676
 #, c-format
 msgid "No certificate add token for member %s on remote: %s"
 msgstr "メンバー %s に対する証明書追加トークンがリモートにありません: %s"
 
-#: cmd/incus/cluster.go:1047
+#: cmd/incus/cluster.go:1033
 #, c-format
 msgid "No cluster join token for member %s on remote: %s"
 msgstr ""
@@ -4634,7 +4626,7 @@ msgstr "\"カスタム\" のボリュームのみがエクスポートできま�
 msgid "Only \"custom\" volumes can be snapshotted"
 msgstr "\"カスタム\" のボリュームのみがスナップショットを取得できます"
 
-#: cmd/incus/remote.go:323
+#: cmd/incus/remote.go:322
 msgid "Only https URLs are supported for simplestreams"
 msgstr "simplestreams は https の URL のみサポートします"
 
@@ -4702,11 +4694,11 @@ msgstr "PROFILES"
 msgid "PROJECT"
 msgstr "PROJECT"
 
-#: cmd/incus/remote.go:719
+#: cmd/incus/remote.go:710
 msgid "PROTOCOL"
 msgstr "PROTOCOL"
 
-#: cmd/incus/image.go:1056 cmd/incus/remote.go:721
+#: cmd/incus/image.go:1056 cmd/incus/remote.go:712
 msgid "PUBLIC"
 msgstr "PUBLIC"
 
@@ -4735,19 +4727,11 @@ msgstr "インスタンスを一時停止します"
 msgid "Perform an incremental copy"
 msgstr "インクリメンタルコピーを実行します"
 
-#: cmd/incus/remote.go:178
+#: cmd/incus/remote.go:177
 msgid "Please provide an alternate server address (empty to abort):"
 msgstr "別のサーバアドレスを指定してください（空の場合は中止）:"
 
-#: cmd/incus/config_trust.go:155
-msgid "Please provide client name: "
-msgstr "クライアント名を入力してください: "
-
-#: cmd/incus/cluster.go:834
-msgid "Please provide cluster member name: "
-msgstr "クラスターメンバー名を入力してください: "
-
-#: cmd/incus/remote.go:453
+#: cmd/incus/remote.go:452
 msgid "Please type 'y', 'n' or the fingerprint:"
 msgstr "'y', 'n', フィンガープリントのどれかを入力してください:"
 
@@ -4767,7 +4751,7 @@ msgstr "終了するには ctrl+c を押してください"
 #: cmd/incus/cluster.go:771 cmd/incus/cluster_group.go:340
 #: cmd/incus/config.go:269 cmd/incus/config.go:344
 #: cmd/incus/config_metadata.go:148 cmd/incus/config_template.go:206
-#: cmd/incus/config_trust.go:313 cmd/incus/image.go:457
+#: cmd/incus/config_trust.go:354 cmd/incus/image.go:457
 #: cmd/incus/network.go:687 cmd/incus/network_acl.go:621
 #: cmd/incus/network_forward.go:636 cmd/incus/network_load_balancer.go:638
 #: cmd/incus/network_peer.go:611 cmd/incus/network_zone.go:552
@@ -4881,7 +4865,7 @@ msgstr "プロジェクト %s を削除しました"
 msgid "Project %s renamed to %s"
 msgstr "プロジェクト名 %s を %s に変更しました"
 
-#: cmd/incus/remote.go:102
+#: cmd/incus/remote.go:101
 msgid "Project to use for the remote"
 msgstr "リモートで使用するプロジェクト"
 
@@ -5006,7 +4990,12 @@ msgstr ""
 "lxc storage volume edit [<remote>:]<pool> <volume> < volume.yaml\n"
 "    pool.yaml の内容でストレージボリュームを更新します。"
 
-#: cmd/incus/remote.go:101
+#: cmd/incus/config_trust.go:224
+#, fuzzy, c-format
+msgid "Provided certificate path doesn't exist: %s"
+msgstr "クライアント %s の証明書追加トークン: %s"
+
+#: cmd/incus/remote.go:100
 msgid "Public image server"
 msgstr "Public なイメージサーバとして設定します"
 
@@ -5099,39 +5088,40 @@ msgstr "インスタンスの更新中: %s"
 msgid "Refreshing the image: %s"
 msgstr "イメージの更新中: %s"
 
-#: cmd/incus/remote.go:769
+#: cmd/incus/remote.go:760
 #, c-format
 msgid "Remote %s already exists"
 msgstr "リモート %s は既に存在します"
 
-#: cmd/incus/project.go:769 cmd/incus/remote.go:760 cmd/incus/remote.go:831
-#: cmd/incus/remote.go:886 cmd/incus/remote.go:924
+#: cmd/incus/project.go:769 cmd/incus/remote.go:751 cmd/incus/remote.go:822
+#: cmd/incus/remote.go:877 cmd/incus/remote.go:915
 #, c-format
 msgid "Remote %s doesn't exist"
 msgstr "リモート %s は存在しません"
 
-#: cmd/incus/remote.go:292
+#: cmd/incus/remote.go:291
 #, c-format
 msgid "Remote %s exists as <%s>"
 msgstr "リモート %s は <%s> として存在します"
 
-#: cmd/incus/remote.go:839
+#: cmd/incus/remote.go:830
 #, c-format
 msgid "Remote %s is global and cannot be removed"
 msgstr "リモート %s は global ですので削除できません"
 
-#: cmd/incus/remote.go:764 cmd/incus/remote.go:835 cmd/incus/remote.go:928
+#: cmd/incus/remote.go:755 cmd/incus/remote.go:826 cmd/incus/remote.go:919
 #, c-format
 msgid "Remote %s is static and cannot be modified"
 msgstr "リモート %s は static ですので変更できません"
 
-#: cmd/incus/remote.go:98
-msgid "Remote admin password"
-msgstr "リモートの管理者パスワード"
-
-#: cmd/incus/remote.go:286
+#: cmd/incus/remote.go:285
 msgid "Remote names may not contain colons"
 msgstr "リモート名にコロンを含めることはできません"
+
+#: cmd/incus/remote.go:97
+#, fuzzy
+msgid "Remote trust token"
+msgstr "信頼済みクライアントを削除します"
 
 #: cmd/incus/info.go:283
 #, c-format
@@ -5200,7 +5190,7 @@ msgstr "ロードバランサーからポートを削除します"
 msgid "Remove profiles from instances"
 msgstr "インスタンスからプロファイルを削除します"
 
-#: cmd/incus/remote.go:810 cmd/incus/remote.go:811
+#: cmd/incus/remote.go:801 cmd/incus/remote.go:802
 msgid "Remove remotes"
 msgstr "リモートサーバを削除します"
 
@@ -5212,7 +5202,7 @@ msgstr "クラスタメンバからロールを削除します"
 msgid "Remove rules from an ACL"
 msgstr "ACL からルールを削除します"
 
-#: cmd/incus/config_trust.go:531 cmd/incus/config_trust.go:532
+#: cmd/incus/config_trust.go:572 cmd/incus/config_trust.go:573
 msgid "Remove trusted client"
 msgstr "信頼済みクライアントを削除します"
 
@@ -5255,7 +5245,7 @@ msgstr "プロファイル名を変更します"
 msgid "Rename projects"
 msgstr "プロジェクト名を変更します"
 
-#: cmd/incus/remote.go:739 cmd/incus/remote.go:740
+#: cmd/incus/remote.go:730 cmd/incus/remote.go:731
 msgid "Rename remotes"
 msgstr "リモートサーバ名を変更します"
 
@@ -5283,7 +5273,7 @@ msgstr "ストレージボリューム名 \"%s\" を \"%s\" に変更しまし�
 msgid "Render: %s (%s)"
 msgstr "レンダー: %s (%s)"
 
-#: cmd/incus/cluster.go:803 cmd/incus/cluster.go:804
+#: cmd/incus/cluster.go:801 cmd/incus/cluster.go:802
 msgid "Request a join token for adding a cluster member"
 msgstr "クラスターメンバーに join するためのトークンを要求します"
 
@@ -5310,7 +5300,7 @@ msgstr ""
 "\n"
 "\"lxc pause\" の反対のコマンドは \"lxc start\" です。"
 
-#: cmd/incus/cluster.go:1188 cmd/incus/cluster.go:1189
+#: cmd/incus/cluster.go:1174 cmd/incus/cluster.go:1175
 msgid "Restore cluster member"
 msgstr "クラスターメンバーをリストアします"
 
@@ -5334,12 +5324,12 @@ msgstr "スナップショットからインスタンスをリストアします
 msgid "Restore storage volume snapshots"
 msgstr "スナップショットからストレージボリュームをリストアします"
 
-#: cmd/incus/cluster.go:1245
+#: cmd/incus/cluster.go:1231
 #, c-format
 msgid "Restoring cluster member: %s"
 msgstr "クラスターメンバーをリストアしています: %s"
 
-#: cmd/incus/config_trust.go:100
+#: cmd/incus/config_trust.go:97 cmd/incus/config_trust.go:179
 msgid "Restrict the certificate to one or more projects"
 msgstr "証明書の使用を1つ以上のプロジェクトに制限します"
 
@@ -5352,11 +5342,11 @@ msgstr "インスタンスのコンソールログを取得します"
 msgid "Retrieving image: %s"
 msgstr "イメージの取得中: %s"
 
-#: cmd/incus/config_trust.go:577 cmd/incus/config_trust.go:578
+#: cmd/incus/config_trust.go:618 cmd/incus/config_trust.go:619
 msgid "Revoke certificate add token"
 msgstr "証明書追加トークンを失効（Revoke）させます"
 
-#: cmd/incus/cluster.go:981
+#: cmd/incus/cluster.go:967
 msgid "Revoke cluster member join token"
 msgstr "クラスターメンバーに join するためのトークンを失効（Revoke）させます"
 
@@ -5412,7 +5402,7 @@ msgstr "SSH クライアントが切断されました %q"
 msgid "STATE"
 msgstr "STATE"
 
-#: cmd/incus/remote.go:722
+#: cmd/incus/remote.go:713
 msgid "STATIC"
 msgstr "STATIC"
 
@@ -5450,26 +5440,26 @@ msgstr "秘密鍵: %s"
 msgid "Send a raw query to the server"
 msgstr "直接リクエスト (raw query) を LXD に送ります"
 
-#: cmd/incus/remote.go:100
+#: cmd/incus/remote.go:99
 #, fuzzy
 msgid "Server authentication type (tls or oidc)"
 msgstr "サーバの認証タイプ (tls もしくは candid)"
 
-#: cmd/incus/remote.go:451
+#: cmd/incus/remote.go:450
 msgid "Server certificate NACKed by user"
 msgstr "ユーザによりサーバ証明書が拒否されました"
 
-#: cmd/incus/remote.go:589
+#: cmd/incus/remote.go:580
 msgid "Server doesn't trust us after authentication"
 msgstr "認証後、サーバが我々を信用していません"
 
-#: cmd/incus/cluster.go:158 cmd/incus/cluster.go:915 cmd/incus/cluster.go:1009
-#: cmd/incus/cluster.go:1100 cmd/incus/cluster_group.go:419
+#: cmd/incus/cluster.go:158 cmd/incus/cluster.go:901 cmd/incus/cluster.go:995
+#: cmd/incus/cluster.go:1086 cmd/incus/cluster_group.go:419
 #, fuzzy
 msgid "Server isn't part of a cluster"
 msgstr "LXD サーバはクラスタの一部ではありません"
 
-#: cmd/incus/remote.go:99
+#: cmd/incus/remote.go:98
 #, fuzzy
 msgid "Server protocol (incus or simplestreams)"
 msgstr "サーバのプロトコル (lxd or simplestreams)"
@@ -5744,7 +5734,7 @@ msgstr ""
 "後方互換性のため、単一の設定を行う場合は次の形式でも設定できます:\n"
 "    lxc storage volume set [<remote>:]<pool> <volume> <key> <value>"
 
-#: cmd/incus/remote.go:903 cmd/incus/remote.go:904
+#: cmd/incus/remote.go:894 cmd/incus/remote.go:895
 msgid "Set the URL for the remote"
 msgstr "リモートの URL を設定します"
 
@@ -5821,7 +5811,7 @@ msgstr "ストレージバケットに対する鍵を作成します"
 msgid "Set the key as a storage volume property"
 msgstr "新しいストレージボリュームをプロファイルに追加します"
 
-#: cmd/incus/config.go:529
+#: cmd/incus/config.go:526
 msgid "Set the key as an instance property"
 msgstr ""
 
@@ -5870,7 +5860,7 @@ msgstr "イメージのプロパティを表示します"
 msgid "Show instance metadata files"
 msgstr "インスタンスのメタデータファイルを表示します"
 
-#: cmd/incus/config.go:729 cmd/incus/config.go:730
+#: cmd/incus/config.go:726 cmd/incus/config.go:727
 msgid "Show instance or server configurations"
 msgstr "インスタンスもしくはサーバの設定を表示します"
 
@@ -5952,11 +5942,11 @@ msgstr "ストレージボリュームの設定を表示する"
 msgid "Show storage volume state information"
 msgstr "ストレージボリュームの状態を表示します"
 
-#: cmd/incus/remote.go:619 cmd/incus/remote.go:620
+#: cmd/incus/remote.go:610 cmd/incus/remote.go:611
 msgid "Show the default remote"
 msgstr "デフォルトのリモートを表示します"
 
-#: cmd/incus/config.go:733
+#: cmd/incus/config.go:730
 msgid "Show the expanded configuration"
 msgstr "拡張した設定を表示する"
 
@@ -5976,7 +5966,7 @@ msgstr "ストレージプールで利用可能なリソースを表示します
 msgid "Show the used and free space in bytes"
 msgstr "使用量と空き容量を byte で表示します"
 
-#: cmd/incus/config_trust.go:648 cmd/incus/config_trust.go:649
+#: cmd/incus/config_trust.go:689 cmd/incus/config_trust.go:690
 msgid "Show trust configurations"
 msgstr "信頼済みクライアントの設定を表示します"
 
@@ -6139,7 +6129,7 @@ msgstr "ストレージボリュームの移動が成功しました!"
 msgid "Store the instance state"
 msgstr "インスタンスの状態を保存します"
 
-#: cmd/incus/cluster.go:1140
+#: cmd/incus/cluster.go:1126
 #, c-format
 msgid "Successfully updated cluster certificates for remote %s"
 msgstr "リモート %s に対するクラスター証明書の更新に成功しました"
@@ -6166,7 +6156,7 @@ msgstr "Swap (ピーク)"
 msgid "Switch the current project"
 msgstr "現在のプロジェクトを切り替えます"
 
-#: cmd/incus/remote.go:865 cmd/incus/remote.go:866
+#: cmd/incus/remote.go:856 cmd/incus/remote.go:857
 msgid "Switch the default remote"
 msgstr "デフォルトのリモートを切り替えます"
 
@@ -6174,11 +6164,11 @@ msgstr "デフォルトのリモートを切り替えます"
 msgid "TARGET"
 msgstr "TARGET"
 
-#: cmd/incus/cluster.go:965 cmd/incus/config_trust.go:513
+#: cmd/incus/cluster.go:951 cmd/incus/config_trust.go:554
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: cmd/incus/config_trust.go:406 cmd/incus/image.go:1061
+#: cmd/incus/config_trust.go:447 cmd/incus/image.go:1061
 #: cmd/incus/image_alias.go:236 cmd/incus/list.go:571 cmd/incus/network.go:981
 #: cmd/incus/network.go:1055 cmd/incus/network_allocations.go:27
 #: cmd/incus/operation.go:162 cmd/incus/storage_volume.go:1487
@@ -6265,7 +6255,7 @@ msgstr ""
 msgid "The instance you are starting doesn't have any network attached to it."
 msgstr "起動しようとしたインスタンスに接続されているネットワークがありません。"
 
-#: cmd/incus/config.go:631
+#: cmd/incus/config.go:628
 msgid "The is no config key to set on an instance snapshot."
 msgstr ""
 
@@ -6465,8 +6455,8 @@ msgstr ""
 "さい\n"
 "仮想マシンの場合は \"lxc launch ubuntu:22.04 --vm\" と実行してみてください"
 
-#: cmd/incus/config.go:293 cmd/incus/config.go:474 cmd/incus/config.go:681
-#: cmd/incus/config.go:773 cmd/incus/copy.go:128 cmd/incus/info.go:336
+#: cmd/incus/config.go:293 cmd/incus/config.go:474 cmd/incus/config.go:678
+#: cmd/incus/config.go:770 cmd/incus/copy.go:128 cmd/incus/info.go:336
 #: cmd/incus/network.go:821 cmd/incus/storage.go:446
 msgid "To use --target, the destination remote must be a cluster"
 msgstr ""
@@ -6523,6 +6513,11 @@ msgstr "インスタンスを転送中: %s"
 msgid "Transmit policy"
 msgstr "通信ポリシー"
 
+#: cmd/incus/remote.go:552
+#, fuzzy, c-format
+msgid "Trust token for %s: "
+msgstr "%s:%s のクラスターに join するためのトークンが削除されました"
+
 #: cmd/incus/action.go:288 cmd/incus/launch.go:110
 #, fuzzy, c-format
 msgid "Try `incus info --show-log %s` for more info"
@@ -6532,7 +6527,7 @@ msgstr "更に情報を得るために `lxc info --show-log %s` を実行して�
 msgid "Type"
 msgstr "タイプ"
 
-#: cmd/incus/config_trust.go:103
+#: cmd/incus/config_trust.go:182
 msgid "Type of certificate"
 msgstr "証明書の形式"
 
@@ -6563,7 +6558,7 @@ msgstr "UNLIMITED"
 msgid "UPLOAD DATE"
 msgstr "UPLOAD DATE"
 
-#: cmd/incus/cluster.go:184 cmd/incus/remote.go:718
+#: cmd/incus/cluster.go:184 cmd/incus/remote.go:709
 msgid "URL"
 msgstr "URL"
 
@@ -6592,11 +6587,11 @@ msgstr "UUID: %v"
 msgid "Unable to create a temporary file: %v"
 msgstr "テンポラリファイルを作成できません: %v"
 
-#: cmd/incus/remote.go:209 cmd/incus/remote.go:243
+#: cmd/incus/remote.go:208 cmd/incus/remote.go:242
 msgid "Unavailable remote server"
 msgstr "リモートサーバーが利用できません"
 
-#: cmd/incus/config_trust.go:119
+#: cmd/incus/config_trust.go:198
 #, c-format
 msgid "Unknown certificate type %q"
 msgstr "未知の証明書タイプ %q"
@@ -6648,7 +6643,7 @@ msgstr "デバイスの設定を削除します"
 msgid "Unset image properties"
 msgstr "イメージのプロパティを削除します"
 
-#: cmd/incus/config.go:853 cmd/incus/config.go:854
+#: cmd/incus/config.go:850 cmd/incus/config.go:851
 msgid "Unset instance or server configuration keys"
 msgstr "インスタンスもしくはサーバの設定を削除します"
 
@@ -6773,7 +6768,7 @@ msgstr "ストレージバケットに対する鍵を作成します"
 msgid "Unset the key as a storage volume property"
 msgstr "新しいストレージボリュームをプロファイルに追加します"
 
-#: cmd/incus/config.go:858
+#: cmd/incus/config.go:855
 msgid "Unset the key as an instance property"
 msgstr ""
 
@@ -6786,11 +6781,11 @@ msgstr "サポートされていないインスタンスタイプです: %s"
 msgid "Up delay"
 msgstr "Up delay"
 
-#: cmd/incus/cluster.go:1060
+#: cmd/incus/cluster.go:1046
 msgid "Update cluster certificate"
 msgstr "クラスター証明書を更新します"
 
-#: cmd/incus/cluster.go:1062
+#: cmd/incus/cluster.go:1048
 msgid ""
 "Update cluster certificate with PEM certificate and key read from input "
 "files."
@@ -6917,8 +6912,8 @@ msgstr ""
 
 #: cmd/incus/network.go:959 cmd/incus/operation.go:147 cmd/incus/project.go:458
 #: cmd/incus/project.go:463 cmd/incus/project.go:468 cmd/incus/project.go:473
-#: cmd/incus/project.go:478 cmd/incus/project.go:483 cmd/incus/remote.go:679
-#: cmd/incus/remote.go:684 cmd/incus/remote.go:689
+#: cmd/incus/project.go:478 cmd/incus/project.go:483 cmd/incus/remote.go:670
+#: cmd/incus/remote.go:675 cmd/incus/remote.go:680
 msgid "YES"
 msgstr "YES"
 
@@ -6954,9 +6949,9 @@ msgstr "[<remote:>]<pool> <volume> <profile> [<device name>]"
 msgid "[<remote:>]<pool> <volume> <profile> [<device name>] [<path>]"
 msgstr "[<remote:>]<pool> <volume> <profile> [<device name>] [<path>]"
 
-#: cmd/incus/cluster.go:119 cmd/incus/cluster.go:878
-#: cmd/incus/cluster_group.go:379 cmd/incus/config_trust.go:345
-#: cmd/incus/config_trust.go:428 cmd/incus/monitor.go:31
+#: cmd/incus/cluster.go:119 cmd/incus/cluster.go:864
+#: cmd/incus/cluster_group.go:379 cmd/incus/config_trust.go:386
+#: cmd/incus/config_trust.go:469 cmd/incus/monitor.go:31
 #: cmd/incus/network.go:909 cmd/incus/network_acl.go:91
 #: cmd/incus/network_zone.go:82 cmd/incus/operation.go:101
 #: cmd/incus/profile.go:610 cmd/incus/project.go:407 cmd/incus/storage.go:583
@@ -6968,17 +6963,18 @@ msgstr "[<remote>:]"
 msgid "[<remote>:] <backup file> [<instance name>]"
 msgstr "[<remote>:] <backup file> [<instance name>]"
 
-#: cmd/incus/cluster.go:1058
+#: cmd/incus/cluster.go:1044
 msgid "[<remote>:] <cert.crt> <cert.key>"
 msgstr "[<remote>:] <cert.crt> <cert.key>"
 
-#: cmd/incus/cluster.go:602 cmd/incus/config_trust.go:576
+#: cmd/incus/config_trust.go:169
+#, fuzzy
+msgid "[<remote>:] <cert>"
+msgstr "[<remote>:] [<cert>]"
+
+#: cmd/incus/cluster.go:602 cmd/incus/config_trust.go:617
 msgid "[<remote>:] <name>"
 msgstr "[<remote>:] <name>"
-
-#: cmd/incus/config_trust.go:85
-msgid "[<remote>:] [<cert>]"
-msgstr "[<remote>:] [<cert>]"
 
 #: cmd/incus/image.go:1015 cmd/incus/list.go:46
 msgid "[<remote>:] [<filter>...]"
@@ -7050,8 +7046,8 @@ msgstr "[<remote>:]<alias> <new-name>"
 msgid "[<remote>:]<cluster member>"
 msgstr "[<remote>:]<cluster member>"
 
-#: cmd/incus/config_trust.go:232 cmd/incus/config_trust.go:529
-#: cmd/incus/config_trust.go:647
+#: cmd/incus/config_trust.go:273 cmd/incus/config_trust.go:570
+#: cmd/incus/config_trust.go:688
 msgid "[<remote>:]<fingerprint>"
 msgstr "[<remote>:]<fingerprint>"
 
@@ -7207,7 +7203,7 @@ msgid "[<remote>:]<instance>[/<snapshot>] [<remote>:] [flags] [key=value...]"
 msgstr "[<remote>:]<instance>[/<snapshot>] [<remote>:] [flags] [key=value...]"
 
 #: cmd/incus/cluster.go:204 cmd/incus/cluster.go:253 cmd/incus/cluster.go:518
-#: cmd/incus/cluster.go:980 cmd/incus/cluster.go:1166 cmd/incus/cluster.go:1187
+#: cmd/incus/cluster.go:966 cmd/incus/cluster.go:1152 cmd/incus/cluster.go:1173
 msgid "[<remote>:]<member>"
 msgstr "[<remote>:]<member>"
 
@@ -7231,6 +7227,11 @@ msgstr "[<remote>:]<member> <new-name>"
 #: cmd/incus/cluster_role.go:48 cmd/incus/cluster_role.go:104
 msgid "[<remote>:]<member> <role[,role...]>"
 msgstr "[<remote>:]<member> <role[,role...]>"
+
+#: cmd/incus/config_trust.go:89
+#, fuzzy
+msgid "[<remote>:]<name>"
+msgstr "[<remote>:] <name>"
 
 #: cmd/incus/network.go:369 cmd/incus/network.go:590 cmd/incus/network.go:787
 #: cmd/incus/network.go:1003 cmd/incus/network.go:1214
@@ -7557,7 +7558,7 @@ msgstr "[<remote>:]<zone> <record> <type> <value>"
 msgid "[<remote>:]<zone> <record> [key=value...]"
 msgstr "[<remote>:]<zone> <record> [key=value...]"
 
-#: cmd/incus/config.go:93 cmd/incus/config.go:728
+#: cmd/incus/config.go:93 cmd/incus/config.go:725
 msgid "[<remote>:][<instance>[/<snapshot>]]"
 msgstr "[<remote>:][<instance>[/<snapshot>]]"
 
@@ -7565,7 +7566,7 @@ msgstr "[<remote>:][<instance>[/<snapshot>]]"
 msgid "[<remote>:][<instance>]"
 msgstr "[<remote>:][<instance>]"
 
-#: cmd/incus/config.go:378 cmd/incus/config.go:852
+#: cmd/incus/config.go:378 cmd/incus/config.go:849
 msgid "[<remote>:][<instance>] <key>"
 msgstr "[<remote>:][<instance>] <key>"
 
@@ -7573,16 +7574,16 @@ msgstr "[<remote>:][<instance>] <key>"
 msgid "[<remote>:][<instance>] <key>=<value>..."
 msgstr "[<remote>:][<instance>] <key>=<value>..."
 
-#: cmd/incus/remote.go:85
+#: cmd/incus/remote.go:84
 msgid "[<remote>] <IP|FQDN|URL|token>"
 msgstr "[<remote>] <IP|FQDN|URL|token>"
 
-#: cmd/incus/cluster.go:802
+#: cmd/incus/cluster.go:800
 #, fuzzy
 msgid "[[<remote>:]<name>]"
 msgstr "[<remote>:] <name>"
 
-#: cmd/incus/project.go:488 cmd/incus/remote.go:708
+#: cmd/incus/project.go:488 cmd/incus/remote.go:699
 msgid "current"
 msgstr "現在値"
 
@@ -7694,10 +7695,7 @@ msgid ""
 "    Will set a CPU limit of \"2\" for the instance.\n"
 "\n"
 "incus config set core.https_address=[::]:8443\n"
-"    Will have the server listen on IPv4 and IPv6 port 8443.\n"
-"\n"
-"incus config set core.trust_password=blah\n"
-"    Will set the server's trust password to blah."
+"    Will have the server listen on IPv4 and IPv6 port 8443."
 msgstr ""
 "lxc config set [<remote>:]<instance> limits.cpu=2\n"
 "    インスタンスの設定値 limits.cpu を \"2\" に設定します。\n"
@@ -8068,7 +8066,7 @@ msgstr ""
 msgid "info"
 msgstr "ストレージ情報"
 
-#: cmd/incus/remote.go:450
+#: cmd/incus/remote.go:449
 msgid "n"
 msgstr "n"
 
@@ -8080,7 +8078,7 @@ msgstr "名前"
 msgid "no"
 msgstr "no"
 
-#: cmd/incus/remote.go:443
+#: cmd/incus/remote.go:442
 msgid "ok (y/n/[fingerprint])?"
 msgstr "ok (y/n/[fingerprint])?"
 
@@ -8120,7 +8118,7 @@ msgstr "サーバに接続できません"
 msgid "used by"
 msgstr "ストレージを使用中の"
 
-#: cmd/incus/remote.go:452
+#: cmd/incus/remote.go:451
 msgid "y"
 msgstr "y"
 
@@ -8128,6 +8126,49 @@ msgstr "y"
 #: cmd/incus/image.go:929 cmd/incus/image.go:1114 cmd/incus/snapshot.go:222
 msgid "yes"
 msgstr "yes"
+
+#~ msgid ""
+#~ "Add new trusted client\n"
+#~ "\n"
+#~ "The following certificate types are supported:\n"
+#~ "- client (default)\n"
+#~ "- metrics\n"
+#~ "\n"
+#~ "If the certificate is omitted, a token will be generated and returned. A "
+#~ "client\n"
+#~ "providing a valid token will have its client certificate added to the "
+#~ "trusted list\n"
+#~ "and the consumed token will be invalidated. Similar to certificates, "
+#~ "tokens can be\n"
+#~ "restricted to one or more projects.\n"
+#~ msgstr ""
+#~ "新たに信頼済みクライアントを追加します\n"
+#~ "\n"
+#~ "次の証明書タイプがサポートされます:\n"
+#~ "- client（デフォルト）\n"
+#~ "- metrics\n"
+#~ "\n"
+#~ "証明書が省略された場合、トークンが生成されて返されます。\n"
+#~ "有効なトークンを提供したクライアントは、そのクライアント証明書が信頼済みリ"
+#~ "ストに追加され、\n"
+#~ "使ったトークンは無効化されます。\n"
+#~ "証明書と同様に、トークンも 1 つ以上のプロジェクトに制限できます。\n"
+
+#~ msgid "Cannot use metrics type certificate when using a token"
+#~ msgstr "トークンを使っている時はメトリクスタイプの証明書を使えません"
+
+#~ msgid "Please provide client name: "
+#~ msgstr "クライアント名を入力してください: "
+
+#~ msgid "Please provide cluster member name: "
+#~ msgstr "クラスターメンバー名を入力してください: "
+
+#~ msgid "Remote admin password"
+#~ msgstr "リモートの管理者パスワード"
+
+#, c-format
+#~ msgid "Admin password (or token) for %s:"
+#~ msgstr "%s の管理者パスワード（もしくはトークン）:"
 
 #~ msgid "Invalid new snapshot name"
 #~ msgstr "不適切な新しいスナップショット名"
@@ -8217,19 +8258,6 @@ msgstr "yes"
 #~ msgid "[<remote>:] <fingerprint>"
 #~ msgstr "[<remote>:] <fingerprint>"
 
-#~ msgid ""
-#~ "Add new trusted clients\n"
-#~ "\n"
-#~ "The following certificate types are supported:\n"
-#~ "- client (default)\n"
-#~ "- metrics\n"
-#~ msgstr ""
-#~ "新たに信頼済みクライアントを追加します。\n"
-#~ "\n"
-#~ "次の証明書タイプをサポートします:\n"
-#~ "- client (デフォルト)\n"
-#~ "- metrics\n"
-
 #~ msgid "[<remote>:] <token>"
 #~ msgstr "[<remote>:] <token>"
 
@@ -8275,9 +8303,6 @@ msgstr "yes"
 
 #~ msgid "Invalid key=value configuration: %w"
 #~ msgstr "不適切な キー=値 のペア: %w"
-
-#~ msgid "Client %s certificate add token: %s"
-#~ msgstr "クライアント %s の証明書追加トークン: %s"
 
 #~ msgid "Ips:"
 #~ msgstr "IPアドレス:"

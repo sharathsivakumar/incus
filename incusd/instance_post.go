@@ -24,11 +24,12 @@ import (
 	"github.com/lxc/incus/incusd/scriptlet"
 	"github.com/lxc/incus/incusd/state"
 	storagePools "github.com/lxc/incus/incusd/storage"
+	"github.com/lxc/incus/internal/jmap"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
 	apiScriptlet "github.com/lxc/incus/shared/api/scriptlet"
 	"github.com/lxc/incus/shared/logger"
-	"github.com/lxc/incus/shared/version"
 )
 
 // swagger:operation POST /1.0/instances/{name} instances instance_post
@@ -283,7 +284,7 @@ func instancePost(d *Daemon, r *http.Request) response.Response {
 	rdr1 := io.NopCloser(bytes.NewBuffer(body))
 	rdr2 := io.NopCloser(bytes.NewBuffer(body))
 
-	reqRaw := shared.Jmap{}
+	reqRaw := jmap.Map{}
 	err = json.NewDecoder(rdr1).Decode(&reqRaw)
 	if err != nil {
 		return response.BadRequest(err)

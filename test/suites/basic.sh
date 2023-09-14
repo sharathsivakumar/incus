@@ -278,7 +278,7 @@ test_basic_usage() {
   incus delete bar
 
   # incus delete should also delete all snapshots of bar
-  [ ! -d "${INCUS_DIR}/snapshots/bar" ]
+  [ ! -d "${INCUS_DIR}/containers-snapshots/bar" ]
 
   # Test randomly named container creation
   incus launch testimage
@@ -639,11 +639,9 @@ test_basic_usage() {
 
   # Test rebuilding an instance with a new image.
   incus init c1 --empty
-  incus remote add l1 "${INCUS_ADDR}" --accept-certificate --password foo
-  incus rebuild l1:testimage c1
+  incus rebuild testimage c1
   incus start c1
   incus delete c1 -f
-  incus remote remove l1
 
   # Test rebuilding an instance with an empty file system.
   incus init testimage c1

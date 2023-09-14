@@ -20,9 +20,10 @@ import (
 	"github.com/lxc/incus/incusd/project"
 	"github.com/lxc/incus/incusd/response"
 	"github.com/lxc/incus/incusd/util"
+	"github.com/lxc/incus/internal/jmap"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
-	"github.com/lxc/incus/shared/version"
 )
 
 // swagger:operation GET /1.0/instances/{name}/backups instances instance_backups_get
@@ -251,7 +252,7 @@ func instanceBackupsPost(d *Daemon, r *http.Request) response.Response {
 		return response.SmartError(err)
 	}
 
-	rj := shared.Jmap{}
+	rj := jmap.Map{}
 	err = json.NewDecoder(r.Body).Decode(&rj)
 	if err != nil {
 		return response.InternalError(err)

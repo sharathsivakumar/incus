@@ -17,10 +17,11 @@ import (
 	"github.com/lxc/incus/incusd/revert"
 	"github.com/lxc/incus/incusd/rsync"
 	"github.com/lxc/incus/incusd/storage/filesystem"
+	"github.com/lxc/incus/internal/instancewriter"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
-	"github.com/lxc/incus/shared/instancewriter"
 	"github.com/lxc/incus/shared/logger"
+	"github.com/lxc/incus/shared/subprocess"
 	"github.com/lxc/incus/shared/validate"
 )
 
@@ -1251,7 +1252,7 @@ func (d *lvm) RestoreVolume(vol Volume, snapshotName string, op *operations.Oper
 	// as newer snapshots are taken at using the "100%ORIGIN" size). Confusing isn't it.
 	if snapVol.IsVMBlock() || snapVol.contentType == ContentTypeFS {
 		snapLVPath := d.lvmDevPath(d.config["lvm.vg_name"], snapVol.volType, ContentTypeFS, snapVol.name)
-		_, err = shared.TryRunCommand("lvresize", "-l", "+100%ORIGIN", "-f", snapLVPath)
+		_, err = subprocess.TryRunCommand("lvresize", "-l", "+100%ORIGIN", "-f", snapLVPath)
 		if err != nil {
 			return err
 		}
@@ -1259,7 +1260,7 @@ func (d *lvm) RestoreVolume(vol Volume, snapshotName string, op *operations.Oper
 
 	if snapVol.IsVMBlock() || (snapVol.contentType == ContentTypeBlock && snapVol.volType == VolumeTypeCustom) {
 		snapLVPath := d.lvmDevPath(d.config["lvm.vg_name"], snapVol.volType, ContentTypeBlock, snapVol.name)
-		_, err = shared.TryRunCommand("lvresize", "-l", "+100%ORIGIN", "-f", snapLVPath)
+		_, err = subprocess.TryRunCommand("lvresize", "-l", "+100%ORIGIN", "-f", snapLVPath)
 		if err != nil {
 			return err
 		}

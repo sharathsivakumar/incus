@@ -17,8 +17,8 @@ import (
 	"github.com/lxc/incus/incusd/revert"
 	storageDrivers "github.com/lxc/incus/incusd/storage/drivers"
 	"github.com/lxc/incus/incusd/storage/filesystem"
+	"github.com/lxc/incus/internal/idmap"
 	"github.com/lxc/incus/shared"
-	"github.com/lxc/incus/shared/idmap"
 	"github.com/lxc/incus/shared/osarch"
 	"github.com/lxc/incus/shared/subprocess"
 )
@@ -66,7 +66,7 @@ func DiskGetRBDFormat(clusterName string, userName string, poolName string, volu
 
 // BlockFsDetect detects the type of block device.
 func BlockFsDetect(dev string) (string, error) {
-	out, err := shared.RunCommand("blkid", "-s", "TYPE", "-o", "value", dev)
+	out, err := subprocess.RunCommand("blkid", "-s", "TYPE", "-o", "value", dev)
 	if err != nil {
 		return "", err
 	}
@@ -179,7 +179,7 @@ func DiskMountClear(mntPath string) error {
 }
 
 func diskCephRbdMap(clusterName string, userName string, poolName string, volumeName string) (string, error) {
-	devPath, err := shared.RunCommand(
+	devPath, err := subprocess.RunCommand(
 		"rbd",
 		"--id", userName,
 		"--cluster", clusterName,
@@ -203,12 +203,12 @@ func diskCephRbdUnmap(deviceName string) error {
 	unmapImageName := deviceName
 	busyCount := 0
 again:
-	_, err := shared.RunCommand(
+	_, err := subprocess.RunCommand(
 		"rbd",
 		"unmap",
 		unmapImageName)
 	if err != nil {
-		runError, ok := err.(shared.RunError)
+		runError, ok := err.(subprocess.RunError)
 		if ok {
 			exitError, ok := runError.Unwrap().(*exec.ExitError)
 			if ok {

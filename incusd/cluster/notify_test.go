@@ -19,6 +19,7 @@ import (
 	"github.com/lxc/incus/incusd/util"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
+	localtls "github.com/lxc/incus/shared/tls"
 )
 
 // The returned notifier connects to all nodes.
@@ -26,7 +27,7 @@ func TestNewNotifier(t *testing.T) {
 	state, cleanup := state.NewTestState(t)
 	defer cleanup()
 
-	cert := shared.TestingKeyPair()
+	cert := localtls.TestingKeyPair()
 
 	f := notifyFixtures{t: t, state: state}
 	defer f.Nodes(cert, 3)()
@@ -49,7 +50,7 @@ func TestNewNotifier(t *testing.T) {
 	hook := func(client incus.InstanceServer) error {
 		server, _, err := client.GetServer()
 		require.NoError(t, err)
-		peers <- server.Config["cluster.https_address"].(string)
+		peers <- server.Config["cluster.https_address"]
 		return nil
 	}
 
@@ -74,7 +75,7 @@ func TestNewNotify_NotifyAllError(t *testing.T) {
 	state, cleanup := state.NewTestState(t)
 	defer cleanup()
 
-	cert := shared.TestingKeyPair()
+	cert := localtls.TestingKeyPair()
 
 	f := notifyFixtures{t: t, state: state}
 	defer f.Nodes(cert, 3)()
@@ -104,7 +105,7 @@ func TestNewNotify_NotifyAlive(t *testing.T) {
 	state, cleanup := state.NewTestState(t)
 	defer cleanup()
 
-	cert := shared.TestingKeyPair()
+	cert := localtls.TestingKeyPair()
 
 	f := notifyFixtures{t: t, state: state}
 	defer f.Nodes(cert, 3)()
@@ -147,7 +148,7 @@ type notifyFixtures struct {
 //
 // The address of the first node spawned will be saved as local
 // cluster.https_address.
-func (h *notifyFixtures) Nodes(cert *shared.CertInfo, n int) func() {
+func (h *notifyFixtures) Nodes(cert *localtls.CertInfo, n int) func() {
 	servers := make([]*httptest.Server, n)
 	for i := 0; i < n; i++ {
 		servers[i] = newRestServer(cert)
@@ -177,7 +178,7 @@ func (h *notifyFixtures) Nodes(cert *shared.CertInfo, n int) func() {
 		config, err := node.ConfigLoad(ctx, tx)
 		require.NoError(h.t, err)
 		address := servers[0].Listener.Addr().String()
-		values := map[string]any{"cluster.https_address": address}
+		values := map[string]string{"cluster.https_address": address}
 		_, err = config.Patch(values)
 		require.NoError(h.t, err)
 		return nil
@@ -223,7 +224,7 @@ func (h *notifyFixtures) Down(i int) {
 
 // Returns a minimal stub for the REST API server, just realistic
 // enough to make incus.ConnectIncus succeed.
-func newRestServer(cert *shared.CertInfo) *httptest.Server {
+func newRestServer(cert *localtls.CertInfo) *httptest.Server {
 	mux := http.NewServeMux()
 
 	server := httptest.NewUnstartedServer(mux)
@@ -232,7 +233,7 @@ func newRestServer(cert *shared.CertInfo) *httptest.Server {
 
 	mux.HandleFunc("/1.0/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		config := map[string]any{"cluster.https_address": server.Listener.Addr().String()}
+		config := map[string]string{"cluster.https_address": server.Listener.Addr().String()}
 		metadata := api.ServerPut{Config: config}
 		_ = util.WriteJSON(w, api.ResponseRaw{Metadata: metadata}, nil)
 	})

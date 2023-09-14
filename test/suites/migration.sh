@@ -13,9 +13,12 @@ test_migration() {
   # workaround for kernel/criu
   umount /sys/kernel/debug >/dev/null 2>&1 || true
 
+  token="$(incus config trust add foo -q)"
   # shellcheck disable=2153
-  incus_remote remote add l1 "${INCUS_ADDR}" --accept-certificate --password foo
-  incus_remote remote add l2 "${INCUS2_ADDR}" --accept-certificate --password foo
+  incus_remote remote add l1 "${INCUS_ADDR}" --accept-certificate --token "${token}"
+
+  token="$(INCUS_DIR=${INCUS2_DIR} incus config trust add foo -q)"
+  incus_remote remote add l2 "${INCUS2_ADDR}" --accept-certificate --token "${token}"
 
   migration "$INCUS2_DIR"
 
@@ -108,7 +111,7 @@ migration() {
   [ ! -d "${INCUS_DIR}/containers/nonlive" ]
   # FIXME: make this backend agnostic
   if [ "$incus2_backend" = "dir" ]; then
-    [ -d "${incus2_dir}/snapshots/nonlive/snap0/rootfs/bin" ]
+    [ -d "${incus2_dir}/containers-snapshots/nonlive/snap0/rootfs/bin" ]
   fi
 
   incus_remote copy l2:nonlive l1:nonlive2 --mode=push
@@ -123,7 +126,7 @@ migration() {
 
   # FIXME: make this backend agnostic
   if [ "$incus_backend" = "dir" ]; then
-    [ -d "${INCUS_DIR}/snapshots/nonlive2/snap0/rootfs/bin" ]
+    [ -d "${INCUS_DIR}/containers-snapshots/nonlive2/snap0/rootfs/bin" ]
   fi
 
   incus_remote copy l1:nonlive2/snap0 l2:nonlive3 --mode=relay

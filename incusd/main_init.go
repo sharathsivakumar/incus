@@ -10,9 +10,11 @@ import (
 	"github.com/lxc/incus/client"
 	"github.com/lxc/incus/incusd/revert"
 	"github.com/lxc/incus/incusd/util"
+	"github.com/lxc/incus/internal/ports"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
-	"github.com/lxc/incus/shared/version"
+	localtls "github.com/lxc/incus/shared/tls"
 )
 
 type cmdInit struct {
@@ -29,7 +31,6 @@ type cmdInit struct {
 	flagStorageDevice   string
 	flagStorageLoopSize int
 	flagStoragePool     string
-	flagTrustPassword   string
 
 	hostname string
 }
@@ -44,7 +45,7 @@ func (c *cmdInit) Command() *cobra.Command {
 	cmd.Example = `  init --minimal
   init --auto [--network-address=IP] [--network-port=8443] [--storage-backend=dir]
               [--storage-create-device=DEVICE] [--storage-create-loop=SIZE]
-              [--storage-pool=POOL] [--trust-password=PASSWORD]
+              [--storage-pool=POOL]
   init --preseed
   init --dump
 `
@@ -55,12 +56,11 @@ func (c *cmdInit) Command() *cobra.Command {
 	cmd.Flags().BoolVar(&c.flagDump, "dump", false, "Dump YAML config to stdout")
 
 	cmd.Flags().StringVar(&c.flagNetworkAddress, "network-address", "", "Address to bind to (default: none)"+"``")
-	cmd.Flags().IntVar(&c.flagNetworkPort, "network-port", -1, fmt.Sprintf("Port to bind to (default: %d)"+"``", shared.HTTPSDefaultPort))
+	cmd.Flags().IntVar(&c.flagNetworkPort, "network-port", -1, fmt.Sprintf("Port to bind to (default: %d)"+"``", ports.HTTPSDefaultPort))
 	cmd.Flags().StringVar(&c.flagStorageBackend, "storage-backend", "", "Storage backend to use (btrfs, dir, lvm or zfs, default: dir)"+"``")
 	cmd.Flags().StringVar(&c.flagStorageDevice, "storage-create-device", "", "Setup device based storage using DEVICE"+"``")
 	cmd.Flags().IntVar(&c.flagStorageLoopSize, "storage-create-loop", -1, "Setup loop based storage with SIZE in GB"+"``")
 	cmd.Flags().StringVar(&c.flagStoragePool, "storage-pool", "", "Storage pool to use or create"+"``")
-	cmd.Flags().StringVar(&c.flagTrustPassword, "trust-password", "", "Password required to add new clients"+"``")
 
 	return cmd
 }
@@ -81,8 +81,7 @@ func (c *cmdInit) Run(cmd *cobra.Command, args []string) error {
 
 	if !c.flagAuto && (c.flagNetworkAddress != "" || c.flagNetworkPort != -1 ||
 		c.flagStorageBackend != "" || c.flagStorageDevice != "" ||
-		c.flagStorageLoopSize != -1 || c.flagStoragePool != "" ||
-		c.flagTrustPassword != "") {
+		c.flagStorageLoopSize != -1 || c.flagStoragePool != "") {
 		return fmt.Errorf("Configuration flags require --auto")
 	}
 
@@ -90,7 +89,7 @@ func (c *cmdInit) Run(cmd *cobra.Command, args []string) error {
 		c.flagPreseed || c.flagNetworkAddress != "" ||
 		c.flagNetworkPort != -1 || c.flagStorageBackend != "" ||
 		c.flagStorageDevice != "" || c.flagStorageLoopSize != -1 ||
-		c.flagStoragePool != "" || c.flagTrustPassword != "") {
+		c.flagStoragePool != "") {
 		return fmt.Errorf("Can't use --dump with other flags")
 	}
 
@@ -171,16 +170,16 @@ func (c *cmdInit) Run(cmd *cobra.Command, args []string) error {
 		// cluster certificate from each address in the join token until we succeed.
 		for _, clusterAddress := range joinToken.Addresses {
 			// Cluster URL
-			config.Cluster.ClusterAddress = util.CanonicalNetworkAddress(clusterAddress, shared.HTTPSDefaultPort)
+			config.Cluster.ClusterAddress = util.CanonicalNetworkAddress(clusterAddress, ports.HTTPSDefaultPort)
 
 			// Cluster certificate
-			cert, err := shared.GetRemoteCertificate(fmt.Sprintf("https://%s", config.Cluster.ClusterAddress), version.UserAgent)
+			cert, err := localtls.GetRemoteCertificate(fmt.Sprintf("https://%s", config.Cluster.ClusterAddress), version.UserAgent)
 			if err != nil {
 				fmt.Printf("Error connecting to existing cluster member %q: %v\n", clusterAddress, err)
 				continue
 			}
 
-			certDigest := shared.CertFingerprint(cert)
+			certDigest := localtls.CertFingerprint(cert)
 			if joinToken.Fingerprint != certDigest {
 				return fmt.Errorf("Certificate fingerprint mismatch between join token and cluster member %q", clusterAddress)
 			}
@@ -193,16 +192,13 @@ func (c *cmdInit) Run(cmd *cobra.Command, args []string) error {
 		if config.Cluster.ClusterCertificate == "" {
 			return fmt.Errorf("Unable to connect to any of the cluster members specified in join token")
 		}
-
-		// Raw join token used as cluster password so it can be validated.
-		config.Cluster.ClusterPassword = config.Cluster.ClusterToken
 	}
 
 	// If clustering is enabled, and no cluster.https_address network address
 	// was specified, we fallback to core.https_address.
 	if config.Cluster != nil &&
-		config.Node.Config["core.https_address"] != nil &&
-		config.Node.Config["cluster.https_address"] == nil {
+		config.Node.Config["core.https_address"] != "" &&
+		config.Node.Config["cluster.https_address"] == "" {
 		config.Node.Config["cluster.https_address"] = config.Node.Config["core.https_address"]
 	}
 
@@ -210,8 +206,8 @@ func (c *cmdInit) Run(cmd *cobra.Command, args []string) error {
 	// cluster join API format, and use the dedicated API if so.
 	if config.Cluster != nil && config.Cluster.ClusterAddress != "" && config.Cluster.ServerAddress != "" {
 		// Ensure the server and cluster addresses are in canonical form.
-		config.Cluster.ServerAddress = util.CanonicalNetworkAddress(config.Cluster.ServerAddress, shared.HTTPSDefaultPort)
-		config.Cluster.ClusterAddress = util.CanonicalNetworkAddress(config.Cluster.ClusterAddress, shared.HTTPSDefaultPort)
+		config.Cluster.ServerAddress = util.CanonicalNetworkAddress(config.Cluster.ServerAddress, ports.HTTPSDefaultPort)
+		config.Cluster.ClusterAddress = util.CanonicalNetworkAddress(config.Cluster.ClusterAddress, ports.HTTPSDefaultPort)
 
 		op, err := d.UpdateCluster(config.Cluster.ClusterPut, "")
 		if err != nil {

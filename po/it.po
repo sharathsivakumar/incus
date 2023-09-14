@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxd\n"
 "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
-"POT-Creation-Date: 2023-08-30 21:06+0200\n"
+"POT-Creation-Date: 2023-09-05 14:50-0400\n"
 "PO-Revision-Date: 2022-03-10 15:07+0000\n"
 "Last-Translator: Luigi Operoso <brokenpip3@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/linux-containers/"
@@ -108,7 +108,7 @@ msgstr ""
 "###   source: /home/chb/mnt/lxd_test/default.img\n"
 "###   zfs.pool_name: default"
 
-#: cmd/incus/config_trust.go:243
+#: cmd/incus/config_trust.go:284
 #, fuzzy
 msgid ""
 "### This is a YAML representation of the certificate.\n"
@@ -616,7 +616,7 @@ msgstr "non tutti i profili dell'origine esistono nella destinazione"
 msgid "--empty cannot be combined with an image name"
 msgstr ""
 
-#: cmd/incus/config.go:468 cmd/incus/config.go:767
+#: cmd/incus/config.go:468 cmd/incus/config.go:764
 msgid "--expanded cannot be used with a server"
 msgstr ""
 
@@ -636,8 +636,8 @@ msgstr ""
 msgid "--refresh can only be used with instances"
 msgstr ""
 
-#: cmd/incus/config.go:157 cmd/incus/config.go:418 cmd/incus/config.go:594
-#: cmd/incus/config.go:793 cmd/incus/info.go:451
+#: cmd/incus/config.go:157 cmd/incus/config.go:418 cmd/incus/config.go:591
+#: cmd/incus/config.go:790 cmd/incus/info.go:451
 msgid "--target cannot be used with instances"
 msgstr ""
 
@@ -654,15 +654,15 @@ msgstr ""
 msgid "<old alias> <new alias>"
 msgstr ""
 
-#: cmd/incus/remote.go:808 cmd/incus/remote.go:864
+#: cmd/incus/remote.go:799 cmd/incus/remote.go:855
 msgid "<remote>"
 msgstr ""
 
-#: cmd/incus/remote.go:902
+#: cmd/incus/remote.go:893
 msgid "<remote> <URL>"
 msgstr ""
 
-#: cmd/incus/remote.go:737
+#: cmd/incus/remote.go:728
 msgid "<remote> <new-name>"
 msgstr ""
 
@@ -680,6 +680,15 @@ msgstr ""
 msgid "<target>"
 msgstr ""
 
+#: cmd/incus/config_trust.go:120
+msgid "A client name must be provided"
+msgstr ""
+
+#: cmd/incus/cluster.go:826
+#, fuzzy
+msgid "A cluster member name must be provided"
+msgstr "Il nome del container è: %s"
+
 #: cmd/incus/network_allocations.go:26
 msgid "ADDRESS"
 msgstr ""
@@ -696,11 +705,11 @@ msgstr "ALIAS"
 msgid "ARCHITECTURE"
 msgstr "ARCHITETTURA"
 
-#: cmd/incus/remote.go:720
+#: cmd/incus/remote.go:711
 msgid "AUTH TYPE"
 msgstr ""
 
-#: cmd/incus/remote.go:97
+#: cmd/incus/remote.go:96
 msgid "Accept certificate"
 msgstr "Accetta certificato"
 
@@ -765,11 +774,11 @@ msgstr ""
 msgid "Add new aliases"
 msgstr "Aggiungi nuovi alias"
 
-#: cmd/incus/remote.go:86
+#: cmd/incus/remote.go:85
 msgid "Add new remote servers"
 msgstr "Aggiungi un nuovo server remoto"
 
-#: cmd/incus/remote.go:87
+#: cmd/incus/remote.go:86
 msgid ""
 "Add new remote servers\n"
 "\n"
@@ -781,25 +790,30 @@ msgid ""
 "protocol=simplestreams\n"
 msgstr ""
 
-#: cmd/incus/config_trust.go:86
+#: cmd/incus/config_trust.go:90
 msgid "Add new trusted client"
 msgstr ""
 
-#: cmd/incus/config_trust.go:87
+#: cmd/incus/config_trust.go:170
+#, fuzzy
+msgid "Add new trusted client certificate"
+msgstr "Accetta certificato"
+
+#: cmd/incus/config_trust.go:171
 msgid ""
-"Add new trusted client\n"
+"Add new trusted client certificate\n"
 "\n"
 "The following certificate types are supported:\n"
 "- client (default)\n"
 "- metrics\n"
+msgstr ""
+
+#: cmd/incus/config_trust.go:91
+msgid ""
+"Add new trusted client\n"
 "\n"
-"If the certificate is omitted, a token will be generated and returned. A "
-"client\n"
-"providing a valid token will have its client certificate added to the "
-"trusted list\n"
-"and the consumed token will be invalidated. Similar to certificates, tokens "
-"can be\n"
-"restricted to one or more projects.\n"
+"This will issue a trust token to be used by the client to add itself to the "
+"trust store.\n"
 msgstr ""
 
 #: cmd/incus/network_forward.go:744 cmd/incus/network_forward.go:745
@@ -832,11 +846,6 @@ msgstr ""
 #: cmd/incus/storage_bucket.go:164
 #, fuzzy, c-format
 msgid "Admin access key: %s"
-msgstr "Password amministratore per %s: "
-
-#: cmd/incus/remote.go:553
-#, fuzzy, c-format
-msgid "Admin password (or token) for %s:"
 msgstr "Password amministratore per %s: "
 
 #: cmd/incus/storage_bucket.go:165
@@ -872,11 +881,11 @@ msgstr "Alias:"
 msgid "All projects"
 msgstr ""
 
-#: cmd/incus/remote.go:177
+#: cmd/incus/remote.go:176
 msgid "All server addresses are unavailable"
 msgstr ""
 
-#: cmd/incus/config_trust.go:102
+#: cmd/incus/config_trust.go:181
 #, fuzzy
 msgid "Alternative certificate name"
 msgstr "Accetta certificato"
@@ -891,7 +900,7 @@ msgstr "Architettura: %s"
 msgid "Architecture: %v"
 msgstr "Architettura: %s"
 
-#: cmd/incus/cluster.go:1222
+#: cmd/incus/cluster.go:1208
 #, c-format
 msgid "Are you sure you want to %s cluster member %q? (yes/no) [default=no]: "
 msgstr ""
@@ -945,7 +954,7 @@ msgid ""
 "as well as retrieve past log entries from it."
 msgstr ""
 
-#: cmd/incus/remote.go:539
+#: cmd/incus/remote.go:538
 #, c-format
 msgid "Authentication type '%s' not supported by server"
 msgstr ""
@@ -964,7 +973,7 @@ msgstr ""
 msgid "Auto update: %s"
 msgstr "Aggiornamento automatico: %s"
 
-#: cmd/incus/remote.go:132
+#: cmd/incus/remote.go:131
 msgid "Available projects:"
 msgstr ""
 
@@ -1044,7 +1053,7 @@ msgstr "Byte inviati"
 msgid "CANCELABLE"
 msgstr ""
 
-#: cmd/incus/config_trust.go:408
+#: cmd/incus/config_trust.go:449
 msgid "COMMON NAME"
 msgstr "NOME COMUNE"
 
@@ -1118,7 +1127,7 @@ msgstr "Impossibile effettuare il pull di una directory senza --recursive"
 msgid "Can't read from stdin: %w"
 msgstr "Impossible leggere da stdin: %s"
 
-#: cmd/incus/remote.go:843
+#: cmd/incus/remote.go:834
 msgid "Can't remove the default remote"
 msgstr ""
 
@@ -1143,7 +1152,7 @@ msgstr ""
 msgid "Can't supply uid/gid/mode in recursive mode"
 msgstr ""
 
-#: cmd/incus/config.go:660
+#: cmd/incus/config.go:657
 #, c-format
 msgid "Can't unset key '%s', it's not currently set"
 msgstr ""
@@ -1172,10 +1181,6 @@ msgstr ""
 msgid "Cannot set key: %s"
 msgstr ""
 
-#: cmd/incus/config_trust.go:188
-msgid "Cannot use metrics type certificate when using a token"
-msgstr ""
-
 #: cmd/incus/info.go:401 cmd/incus/info.go:413
 #, c-format
 msgid "Card %d:"
@@ -1186,18 +1191,18 @@ msgstr ""
 msgid "Card: %s (%s)"
 msgstr ""
 
-#: cmd/incus/config_trust.go:628
+#: cmd/incus/config_trust.go:669
 #, fuzzy, c-format
 msgid "Certificate add token for %s deleted"
 msgstr "Il nome del container è: %s"
 
-#: cmd/incus/remote.go:214
+#: cmd/incus/remote.go:213
 #, c-format
 msgid ""
 "Certificate fingerprint mismatch between certificate token and server %q"
 msgstr ""
 
-#: cmd/incus/remote.go:442
+#: cmd/incus/remote.go:441
 #, c-format
 msgid "Certificate fingerprint: %s"
 msgstr ""
@@ -1206,12 +1211,12 @@ msgstr ""
 msgid "Chassis"
 msgstr ""
 
-#: cmd/incus/config_trust.go:212
+#: cmd/incus/config_trust.go:147
 #, fuzzy, c-format
 msgid "Client %s certificate add token:"
 msgstr "Il nome del container è: %s"
 
-#: cmd/incus/remote.go:593
+#: cmd/incus/remote.go:584
 #, fuzzy
 msgid "Client certificate now trusted by server:"
 msgstr "Certificato del client salvato dal server: "
@@ -1241,7 +1246,7 @@ msgstr ""
 msgid "Cluster group %s renamed to %s"
 msgstr ""
 
-#: cmd/incus/cluster.go:1040
+#: cmd/incus/cluster.go:1026
 #, c-format
 msgid "Cluster join token for %s:%s deleted"
 msgstr ""
@@ -1266,8 +1271,8 @@ msgstr ""
 msgid "Cluster member %s removed from group %s"
 msgstr ""
 
-#: cmd/incus/config.go:101 cmd/incus/config.go:385 cmd/incus/config.go:528
-#: cmd/incus/config.go:734 cmd/incus/config.go:857 cmd/incus/copy.go:60
+#: cmd/incus/config.go:101 cmd/incus/config.go:385 cmd/incus/config.go:525
+#: cmd/incus/config.go:731 cmd/incus/config.go:854 cmd/incus/copy.go:60
 #: cmd/incus/info.go:45 cmd/incus/init.go:55 cmd/incus/move.go:64
 #: cmd/incus/network.go:300 cmd/incus/network.go:723 cmd/incus/network.go:792
 #: cmd/incus/network.go:1134 cmd/incus/network.go:1219
@@ -1302,14 +1307,6 @@ msgstr ""
 #: cmd/incus/storage_volume.go:2374 cmd/incus/storage_volume.go:2447
 #: cmd/incus/storage_volume.go:2527 cmd/incus/storage_volume.go:2679
 msgid "Cluster member name"
-msgstr ""
-
-#: cmd/incus/cluster.go:805
-msgid "Cluster member name (alternative to passing it as an argument)"
-msgstr ""
-
-#: cmd/incus/cluster.go:829
-msgid "Cluster member name was provided as both a flag and as an argument"
 msgstr ""
 
 #: cmd/incus/cluster.go:675
@@ -1356,7 +1353,7 @@ msgstr ""
 
 #: cmd/incus/cluster.go:770 cmd/incus/cluster_group.go:339
 #: cmd/incus/config.go:268 cmd/incus/config.go:343
-#: cmd/incus/config_metadata.go:147 cmd/incus/config_trust.go:312
+#: cmd/incus/config_metadata.go:147 cmd/incus/config_trust.go:353
 #: cmd/incus/image.go:456 cmd/incus/network.go:686 cmd/incus/network_acl.go:620
 #: cmd/incus/network_forward.go:635 cmd/incus/network_load_balancer.go:637
 #: cmd/incus/network_peer.go:610 cmd/incus/network_zone.go:551
@@ -1474,41 +1471,41 @@ msgstr ""
 msgid "Cores:"
 msgstr ""
 
-#: cmd/incus/remote.go:477
+#: cmd/incus/remote.go:476
 #, fuzzy, c-format
 msgid "Could not close server cert file %q: %w"
 msgstr "Certificato del client salvato dal server: "
 
-#: cmd/incus/remote.go:220 cmd/incus/remote.go:461
+#: cmd/incus/remote.go:219 cmd/incus/remote.go:460
 msgid "Could not create server cert dir"
 msgstr ""
 
-#: cmd/incus/cluster.go:1104
+#: cmd/incus/cluster.go:1090
 #, fuzzy, c-format
 msgid "Could not find certificate file path: %s"
 msgstr "Certificato del client salvato dal server: "
 
-#: cmd/incus/cluster.go:1108
+#: cmd/incus/cluster.go:1094
 #, c-format
 msgid "Could not find certificate key file path: %s"
 msgstr ""
 
-#: cmd/incus/cluster.go:1113
+#: cmd/incus/cluster.go:1099
 #, fuzzy, c-format
 msgid "Could not read certificate file: %s with error: %v"
 msgstr "Certificato del client salvato dal server: "
 
-#: cmd/incus/cluster.go:1118
+#: cmd/incus/cluster.go:1104
 #, fuzzy, c-format
 msgid "Could not read certificate key file: %s with error: %v"
 msgstr "Certificato del client salvato dal server: "
 
-#: cmd/incus/cluster.go:1135
+#: cmd/incus/cluster.go:1121
 #, c-format
 msgid "Could not write new remote certificate for remote '%s' with error: %v"
 msgstr ""
 
-#: cmd/incus/remote.go:472
+#: cmd/incus/remote.go:471
 #, fuzzy, c-format
 msgid "Could not write server cert file %q: %w"
 msgstr "Certificato del client salvato dal server: "
@@ -1794,9 +1791,9 @@ msgstr ""
 #: cmd/incus/cluster.go:29 cmd/incus/cluster.go:122 cmd/incus/cluster.go:206
 #: cmd/incus/cluster.go:255 cmd/incus/cluster.go:306 cmd/incus/cluster.go:367
 #: cmd/incus/cluster.go:439 cmd/incus/cluster.go:471 cmd/incus/cluster.go:521
-#: cmd/incus/cluster.go:604 cmd/incus/cluster.go:689 cmd/incus/cluster.go:804
-#: cmd/incus/cluster.go:880 cmd/incus/cluster.go:982 cmd/incus/cluster.go:1061
-#: cmd/incus/cluster.go:1168 cmd/incus/cluster.go:1189
+#: cmd/incus/cluster.go:604 cmd/incus/cluster.go:689 cmd/incus/cluster.go:802
+#: cmd/incus/cluster.go:866 cmd/incus/cluster.go:968 cmd/incus/cluster.go:1047
+#: cmd/incus/cluster.go:1154 cmd/incus/cluster.go:1175
 #: cmd/incus/cluster_group.go:30 cmd/incus/cluster_group.go:84
 #: cmd/incus/cluster_group.go:157 cmd/incus/cluster_group.go:214
 #: cmd/incus/cluster_group.go:266 cmd/incus/cluster_group.go:382
@@ -1804,8 +1801,8 @@ msgstr ""
 #: cmd/incus/cluster_group.go:577 cmd/incus/cluster_group.go:631
 #: cmd/incus/cluster_role.go:23 cmd/incus/cluster_role.go:50
 #: cmd/incus/cluster_role.go:106 cmd/incus/config.go:32 cmd/incus/config.go:95
-#: cmd/incus/config.go:380 cmd/incus/config.go:513 cmd/incus/config.go:730
-#: cmd/incus/config.go:854 cmd/incus/config_device.go:24
+#: cmd/incus/config.go:380 cmd/incus/config.go:513 cmd/incus/config.go:727
+#: cmd/incus/config.go:851 cmd/incus/config_device.go:24
 #: cmd/incus/config_device.go:78 cmd/incus/config_device.go:208
 #: cmd/incus/config_device.go:285 cmd/incus/config_device.go:356
 #: cmd/incus/config_device.go:450 cmd/incus/config_device.go:548
@@ -1815,45 +1812,45 @@ msgstr ""
 #: cmd/incus/config_template.go:27 cmd/incus/config_template.go:67
 #: cmd/incus/config_template.go:110 cmd/incus/config_template.go:152
 #: cmd/incus/config_template.go:240 cmd/incus/config_template.go:300
-#: cmd/incus/config_trust.go:34 cmd/incus/config_trust.go:87
-#: cmd/incus/config_trust.go:234 cmd/incus/config_trust.go:348
-#: cmd/incus/config_trust.go:430 cmd/incus/config_trust.go:532
-#: cmd/incus/config_trust.go:578 cmd/incus/config_trust.go:649
-#: cmd/incus/console.go:36 cmd/incus/copy.go:40 cmd/incus/delete.go:31
-#: cmd/incus/exec.go:41 cmd/incus/export.go:32 cmd/incus/file.go:78
-#: cmd/incus/file.go:118 cmd/incus/file.go:167 cmd/incus/file.go:237
-#: cmd/incus/file.go:456 cmd/incus/file.go:960 cmd/incus/image.go:37
-#: cmd/incus/image.go:145 cmd/incus/image.go:312 cmd/incus/image.go:363
-#: cmd/incus/image.go:490 cmd/incus/image.go:650 cmd/incus/image.go:883
-#: cmd/incus/image.go:1018 cmd/incus/image.go:1337 cmd/incus/image.go:1417
-#: cmd/incus/image.go:1476 cmd/incus/image.go:1528 cmd/incus/image.go:1584
-#: cmd/incus/image_alias.go:24 cmd/incus/image_alias.go:60
-#: cmd/incus/image_alias.go:107 cmd/incus/image_alias.go:152
-#: cmd/incus/image_alias.go:255 cmd/incus/import.go:27 cmd/incus/info.go:33
-#: cmd/incus/init.go:40 cmd/incus/launch.go:24 cmd/incus/list.go:49
-#: cmd/incus/main.go:79 cmd/incus/manpage.go:21 cmd/incus/monitor.go:33
-#: cmd/incus/move.go:35 cmd/incus/network.go:32 cmd/incus/network.go:135
-#: cmd/incus/network.go:220 cmd/incus/network.go:293 cmd/incus/network.go:372
-#: cmd/incus/network.go:422 cmd/incus/network.go:507 cmd/incus/network.go:592
-#: cmd/incus/network.go:720 cmd/incus/network.go:789 cmd/incus/network.go:912
-#: cmd/incus/network.go:1005 cmd/incus/network.go:1076
-#: cmd/incus/network.go:1128 cmd/incus/network.go:1216
-#: cmd/incus/network.go:1280 cmd/incus/network_acl.go:29
-#: cmd/incus/network_acl.go:94 cmd/incus/network_acl.go:165
-#: cmd/incus/network_acl.go:218 cmd/incus/network_acl.go:266
-#: cmd/incus/network_acl.go:327 cmd/incus/network_acl.go:412
-#: cmd/incus/network_acl.go:492 cmd/incus/network_acl.go:522
-#: cmd/incus/network_acl.go:653 cmd/incus/network_acl.go:702
-#: cmd/incus/network_acl.go:751 cmd/incus/network_acl.go:766
-#: cmd/incus/network_acl.go:887 cmd/incus/network_allocations.go:52
-#: cmd/incus/network_forward.go:29 cmd/incus/network_forward.go:86
-#: cmd/incus/network_forward.go:167 cmd/incus/network_forward.go:231
-#: cmd/incus/network_forward.go:329 cmd/incus/network_forward.go:398
-#: cmd/incus/network_forward.go:496 cmd/incus/network_forward.go:526
-#: cmd/incus/network_forward.go:668 cmd/incus/network_forward.go:730
-#: cmd/incus/network_forward.go:745 cmd/incus/network_forward.go:810
-#: cmd/incus/network_load_balancer.go:29 cmd/incus/network_load_balancer.go:90
-#: cmd/incus/network_load_balancer.go:169
+#: cmd/incus/config_trust.go:34 cmd/incus/config_trust.go:91
+#: cmd/incus/config_trust.go:171 cmd/incus/config_trust.go:275
+#: cmd/incus/config_trust.go:389 cmd/incus/config_trust.go:471
+#: cmd/incus/config_trust.go:573 cmd/incus/config_trust.go:619
+#: cmd/incus/config_trust.go:690 cmd/incus/console.go:36 cmd/incus/copy.go:40
+#: cmd/incus/delete.go:31 cmd/incus/exec.go:41 cmd/incus/export.go:32
+#: cmd/incus/file.go:78 cmd/incus/file.go:118 cmd/incus/file.go:167
+#: cmd/incus/file.go:237 cmd/incus/file.go:456 cmd/incus/file.go:960
+#: cmd/incus/image.go:37 cmd/incus/image.go:145 cmd/incus/image.go:312
+#: cmd/incus/image.go:363 cmd/incus/image.go:490 cmd/incus/image.go:650
+#: cmd/incus/image.go:883 cmd/incus/image.go:1018 cmd/incus/image.go:1337
+#: cmd/incus/image.go:1417 cmd/incus/image.go:1476 cmd/incus/image.go:1528
+#: cmd/incus/image.go:1584 cmd/incus/image_alias.go:24
+#: cmd/incus/image_alias.go:60 cmd/incus/image_alias.go:107
+#: cmd/incus/image_alias.go:152 cmd/incus/image_alias.go:255
+#: cmd/incus/import.go:27 cmd/incus/info.go:33 cmd/incus/init.go:40
+#: cmd/incus/launch.go:24 cmd/incus/list.go:49 cmd/incus/main.go:79
+#: cmd/incus/manpage.go:21 cmd/incus/monitor.go:33 cmd/incus/move.go:35
+#: cmd/incus/network.go:32 cmd/incus/network.go:135 cmd/incus/network.go:220
+#: cmd/incus/network.go:293 cmd/incus/network.go:372 cmd/incus/network.go:422
+#: cmd/incus/network.go:507 cmd/incus/network.go:592 cmd/incus/network.go:720
+#: cmd/incus/network.go:789 cmd/incus/network.go:912 cmd/incus/network.go:1005
+#: cmd/incus/network.go:1076 cmd/incus/network.go:1128
+#: cmd/incus/network.go:1216 cmd/incus/network.go:1280
+#: cmd/incus/network_acl.go:29 cmd/incus/network_acl.go:94
+#: cmd/incus/network_acl.go:165 cmd/incus/network_acl.go:218
+#: cmd/incus/network_acl.go:266 cmd/incus/network_acl.go:327
+#: cmd/incus/network_acl.go:412 cmd/incus/network_acl.go:492
+#: cmd/incus/network_acl.go:522 cmd/incus/network_acl.go:653
+#: cmd/incus/network_acl.go:702 cmd/incus/network_acl.go:751
+#: cmd/incus/network_acl.go:766 cmd/incus/network_acl.go:887
+#: cmd/incus/network_allocations.go:52 cmd/incus/network_forward.go:29
+#: cmd/incus/network_forward.go:86 cmd/incus/network_forward.go:167
+#: cmd/incus/network_forward.go:231 cmd/incus/network_forward.go:329
+#: cmd/incus/network_forward.go:398 cmd/incus/network_forward.go:496
+#: cmd/incus/network_forward.go:526 cmd/incus/network_forward.go:668
+#: cmd/incus/network_forward.go:730 cmd/incus/network_forward.go:745
+#: cmd/incus/network_forward.go:810 cmd/incus/network_load_balancer.go:29
+#: cmd/incus/network_load_balancer.go:90 cmd/incus/network_load_balancer.go:169
 #: cmd/incus/network_load_balancer.go:233
 #: cmd/incus/network_load_balancer.go:331
 #: cmd/incus/network_load_balancer.go:399
@@ -1892,9 +1889,9 @@ msgstr ""
 #: cmd/incus/project.go:523 cmd/incus/project.go:580 cmd/incus/project.go:659
 #: cmd/incus/project.go:690 cmd/incus/project.go:743 cmd/incus/project.go:802
 #: cmd/incus/publish.go:32 cmd/incus/query.go:34 cmd/incus/rebuild.go:27
-#: cmd/incus/remote.go:33 cmd/incus/remote.go:87 cmd/incus/remote.go:620
-#: cmd/incus/remote.go:656 cmd/incus/remote.go:740 cmd/incus/remote.go:811
-#: cmd/incus/remote.go:866 cmd/incus/remote.go:904 cmd/incus/rename.go:21
+#: cmd/incus/remote.go:32 cmd/incus/remote.go:86 cmd/incus/remote.go:611
+#: cmd/incus/remote.go:647 cmd/incus/remote.go:731 cmd/incus/remote.go:802
+#: cmd/incus/remote.go:857 cmd/incus/remote.go:895 cmd/incus/rename.go:21
 #: cmd/incus/snapshot.go:27 cmd/incus/snapshot.go:70 cmd/incus/snapshot.go:169
 #: cmd/incus/snapshot.go:256 cmd/incus/snapshot.go:354
 #: cmd/incus/snapshot.go:403 cmd/incus/storage.go:33 cmd/incus/storage.go:96
@@ -2075,12 +2072,12 @@ msgstr ""
 msgid "EPHEMERAL"
 msgstr ""
 
-#: cmd/incus/cluster.go:966 cmd/incus/config_trust.go:514
+#: cmd/incus/cluster.go:952 cmd/incus/config_trust.go:555
 #, fuzzy
 msgid "EXPIRES AT"
 msgstr "DATA DI SCADENZA"
 
-#: cmd/incus/config_trust.go:411
+#: cmd/incus/config_trust.go:452
 msgid "EXPIRY DATE"
 msgstr "DATA DI SCADENZA"
 
@@ -2176,7 +2173,7 @@ msgstr ""
 msgid "Edit storage volume configurations as YAML"
 msgstr ""
 
-#: cmd/incus/config_trust.go:233 cmd/incus/config_trust.go:234
+#: cmd/incus/config_trust.go:274 cmd/incus/config_trust.go:275
 msgid "Edit trust configurations as YAML"
 msgstr ""
 
@@ -2231,7 +2228,7 @@ msgstr ""
 msgid "Error retrieving aliases: %w"
 msgstr ""
 
-#: cmd/incus/cluster.go:414 cmd/incus/config.go:620 cmd/incus/config.go:652
+#: cmd/incus/cluster.go:414 cmd/incus/config.go:617 cmd/incus/config.go:649
 #: cmd/incus/network.go:1194 cmd/incus/network_acl.go:467
 #: cmd/incus/network_forward.go:469 cmd/incus/network_load_balancer.go:470
 #: cmd/incus/network_peer.go:463 cmd/incus/network_zone.go:409
@@ -2243,7 +2240,7 @@ msgstr ""
 msgid "Error setting properties: %v"
 msgstr ""
 
-#: cmd/incus/config.go:614 cmd/incus/config.go:646
+#: cmd/incus/config.go:611 cmd/incus/config.go:643
 #, c-format
 msgid "Error unsetting properties: %v"
 msgstr ""
@@ -2264,12 +2261,12 @@ msgstr ""
 msgid "Error updating template file: %s"
 msgstr ""
 
-#: cmd/incus/cluster.go:1167 cmd/incus/cluster.go:1168
+#: cmd/incus/cluster.go:1153 cmd/incus/cluster.go:1154
 #, fuzzy
 msgid "Evacuate cluster member"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/cluster.go:1247
+#: cmd/incus/cluster.go:1233
 #, fuzzy, c-format
 msgid "Evacuating cluster member: %s"
 msgstr "Il nome del container è: %s"
@@ -2359,7 +2356,7 @@ msgstr ""
 msgid "FILENAME"
 msgstr ""
 
-#: cmd/incus/config_trust.go:409 cmd/incus/image.go:1054
+#: cmd/incus/config_trust.go:450 cmd/incus/image.go:1054
 #: cmd/incus/image.go:1055 cmd/incus/image_alias.go:235
 msgid "FINGERPRINT"
 msgstr ""
@@ -2398,7 +2395,7 @@ msgstr ""
 msgid "Failed connecting to instance SFTP: %w"
 msgstr "Il nome del container è: %s"
 
-#: cmd/incus/config_trust.go:208
+#: cmd/incus/config_trust.go:143
 #, c-format
 msgid "Failed converting token operation to certificate add token: %w"
 msgstr ""
@@ -2438,11 +2435,11 @@ msgstr "Accetta certificato"
 msgid "Failed to accept incoming connection: %w"
 msgstr "Accetta certificato"
 
-#: cmd/incus/remote.go:186
+#: cmd/incus/remote.go:185
 msgid "Failed to add remote"
 msgstr ""
 
-#: cmd/incus/remote.go:237
+#: cmd/incus/remote.go:236
 #, fuzzy, c-format
 msgid "Failed to close server cert file %q: %w"
 msgstr "Accetta certificato"
@@ -2452,7 +2449,7 @@ msgstr "Accetta certificato"
 msgid "Failed to connect to cluster member: %w"
 msgstr "Il nome del container è: %s"
 
-#: cmd/incus/remote.go:227
+#: cmd/incus/remote.go:226
 #, c-format
 msgid "Failed to create %q: %w"
 msgstr ""
@@ -2462,12 +2459,12 @@ msgstr ""
 msgid "Failed to create alias %s: %w"
 msgstr "Accetta certificato"
 
-#: cmd/incus/remote.go:252
+#: cmd/incus/remote.go:251
 #, fuzzy, c-format
 msgid "Failed to create certificate: %w"
 msgstr "Accetta certificato"
 
-#: cmd/incus/remote.go:259
+#: cmd/incus/remote.go:258
 #, c-format
 msgid "Failed to find project: %w"
 msgstr ""
@@ -2496,7 +2493,7 @@ msgstr "Accetta certificato"
 msgid "Failed to walk path for %s: %s"
 msgstr ""
 
-#: cmd/incus/remote.go:232
+#: cmd/incus/remote.go:231
 #, fuzzy, c-format
 msgid "Failed to write server cert file %q: %w"
 msgstr "Accetta certificato"
@@ -2516,11 +2513,11 @@ msgstr "'%s' non è un tipo di file supportato."
 msgid "Fingerprint: %s"
 msgstr ""
 
-#: cmd/incus/cluster.go:1170
+#: cmd/incus/cluster.go:1156
 msgid "Force a particular evacuation action"
 msgstr ""
 
-#: cmd/incus/cluster.go:1197
+#: cmd/incus/cluster.go:1183
 msgid "Force evacuation without user confirmation"
 msgstr ""
 
@@ -2569,9 +2566,9 @@ msgid ""
 "Are you really sure you want to force removing %s? (yes/no): "
 msgstr ""
 
-#: cmd/incus/alias.go:112 cmd/incus/cluster.go:124 cmd/incus/cluster.go:881
+#: cmd/incus/alias.go:112 cmd/incus/cluster.go:124 cmd/incus/cluster.go:867
 #: cmd/incus/cluster_group.go:384 cmd/incus/config_template.go:242
-#: cmd/incus/config_trust.go:350 cmd/incus/config_trust.go:432
+#: cmd/incus/config_trust.go:391 cmd/incus/config_trust.go:473
 #: cmd/incus/image.go:1044 cmd/incus/image_alias.go:157 cmd/incus/list.go:133
 #: cmd/incus/network.go:916 cmd/incus/network.go:1007
 #: cmd/incus/network_acl.go:97 cmd/incus/network_allocations.go:58
@@ -2579,7 +2576,7 @@ msgstr ""
 #: cmd/incus/network_peer.go:84 cmd/incus/network_zone.go:88
 #: cmd/incus/network_zone.go:692 cmd/incus/operation.go:106
 #: cmd/incus/profile.go:617 cmd/incus/project.go:412 cmd/incus/project.go:804
-#: cmd/incus/remote.go:660 cmd/incus/snapshot.go:259 cmd/incus/storage.go:588
+#: cmd/incus/remote.go:651 cmd/incus/snapshot.go:259 cmd/incus/storage.go:588
 #: cmd/incus/storage_bucket.go:454 cmd/incus/storage_bucket.go:769
 #: cmd/incus/storage_volume.go:1400 cmd/incus/storage_volume.go:2208
 #: cmd/incus/warning.go:93
@@ -2619,7 +2616,7 @@ msgstr ""
 msgid "Frequency: %vMhz (min: %vMhz, max: %vMhz)"
 msgstr ""
 
-#: cmd/incus/remote.go:723
+#: cmd/incus/remote.go:714
 msgid "GLOBAL"
 msgstr ""
 
@@ -2635,7 +2632,7 @@ msgstr ""
 msgid "Generate manpages for all commands"
 msgstr ""
 
-#: cmd/incus/remote.go:155 cmd/incus/remote.go:388
+#: cmd/incus/remote.go:154 cmd/incus/remote.go:387
 msgid "Generating a client certificate. This may take a minute..."
 msgstr ""
 
@@ -2862,7 +2859,7 @@ msgstr ""
 msgid "IPV6"
 msgstr ""
 
-#: cmd/incus/config_trust.go:410
+#: cmd/incus/config_trust.go:451
 msgid "ISSUE DATE"
 msgstr ""
 
@@ -3034,7 +3031,7 @@ msgstr "Il nome del container è: %s"
 msgid "Instance type"
 msgstr ""
 
-#: cmd/incus/remote.go:340
+#: cmd/incus/remote.go:339
 #, c-format
 msgid "Invalid URL scheme \"%s\" in \"%s\""
 msgstr ""
@@ -3044,7 +3041,7 @@ msgstr ""
 msgid "Invalid argument %q"
 msgstr "Proprietà errata: %s"
 
-#: cmd/incus/config_trust.go:389
+#: cmd/incus/config_trust.go:430
 msgid "Invalid certificate"
 msgstr ""
 
@@ -3104,7 +3101,7 @@ msgstr "numero errato di argomenti del sottocomando"
 msgid "Invalid path %s"
 msgstr ""
 
-#: cmd/incus/remote.go:329
+#: cmd/incus/remote.go:328
 #, fuzzy, c-format
 msgid "Invalid protocol: %s"
 msgstr "Proprietà errata: %s"
@@ -3191,12 +3188,12 @@ msgstr ""
 msgid "List aliases"
 msgstr "Alias:"
 
-#: cmd/incus/config_trust.go:429 cmd/incus/config_trust.go:430
+#: cmd/incus/config_trust.go:470 cmd/incus/config_trust.go:471
 #, fuzzy
 msgid "List all active certificate add tokens"
 msgstr "Il nome del container è: %s"
 
-#: cmd/incus/cluster.go:879 cmd/incus/cluster.go:880
+#: cmd/incus/cluster.go:865 cmd/incus/cluster.go:866
 #, fuzzy
 msgid "List all active cluster member join tokens"
 msgstr "Il nome del container è: %s"
@@ -3409,7 +3406,7 @@ msgstr ""
 msgid "List network allocations in use"
 msgstr ""
 
-#: cmd/incus/config_trust.go:101
+#: cmd/incus/config_trust.go:98 cmd/incus/config_trust.go:180
 msgid "List of projects to restrict the certificate to"
 msgstr ""
 
@@ -3476,11 +3473,11 @@ msgid ""
 "    U - Current disk usage"
 msgstr ""
 
-#: cmd/incus/remote.go:655 cmd/incus/remote.go:656
+#: cmd/incus/remote.go:646 cmd/incus/remote.go:647
 msgid "List the available remotes"
 msgstr ""
 
-#: cmd/incus/config_trust.go:347 cmd/incus/config_trust.go:348
+#: cmd/incus/config_trust.go:388 cmd/incus/config_trust.go:389
 msgid "List trusted clients"
 msgstr ""
 
@@ -3781,7 +3778,7 @@ msgid ""
 "\"custom\" (user created) volumes."
 msgstr ""
 
-#: cmd/incus/remote.go:32 cmd/incus/remote.go:33
+#: cmd/incus/remote.go:31 cmd/incus/remote.go:32
 msgid "Manage the list of remote servers"
 msgstr ""
 
@@ -3813,7 +3810,7 @@ msgstr ""
 msgid "Member %q does not have role %q"
 msgstr ""
 
-#: cmd/incus/cluster.go:860
+#: cmd/incus/cluster.go:846
 #, c-format
 msgid "Member %s join token:"
 msgstr ""
@@ -3869,7 +3866,7 @@ msgstr ""
 msgid "Missing bucket name"
 msgstr "Il nome del container è: %s"
 
-#: cmd/incus/config_trust.go:266 cmd/incus/config_trust.go:674
+#: cmd/incus/config_trust.go:307 cmd/incus/config_trust.go:715
 msgid "Missing certificate fingerprint"
 msgstr ""
 
@@ -3879,7 +3876,7 @@ msgstr ""
 msgid "Missing cluster group name"
 msgstr "Il nome del container è: %s"
 
-#: cmd/incus/cluster.go:722 cmd/incus/cluster.go:1218
+#: cmd/incus/cluster.go:722 cmd/incus/cluster.go:1204
 #: cmd/incus/cluster_group.go:116 cmd/incus/cluster_group.go:481
 #: cmd/incus/cluster_group.go:655 cmd/incus/cluster_role.go:73
 #: cmd/incus/cluster_role.go:129
@@ -4133,12 +4130,12 @@ msgstr ""
 msgid "Must supply instance name for: "
 msgstr ""
 
-#: cmd/incus/cluster.go:183 cmd/incus/cluster.go:964
-#: cmd/incus/cluster_group.go:437 cmd/incus/config_trust.go:407
-#: cmd/incus/config_trust.go:512 cmd/incus/list.go:565 cmd/incus/network.go:980
+#: cmd/incus/cluster.go:183 cmd/incus/cluster.go:950
+#: cmd/incus/cluster_group.go:437 cmd/incus/config_trust.go:448
+#: cmd/incus/config_trust.go:553 cmd/incus/list.go:565 cmd/incus/network.go:980
 #: cmd/incus/network_acl.go:147 cmd/incus/network_peer.go:139
 #: cmd/incus/network_zone.go:138 cmd/incus/network_zone.go:741
-#: cmd/incus/profile.go:657 cmd/incus/project.go:498 cmd/incus/remote.go:717
+#: cmd/incus/profile.go:657 cmd/incus/project.go:498 cmd/incus/remote.go:708
 #: cmd/incus/storage.go:638 cmd/incus/storage_bucket.go:506
 #: cmd/incus/storage_bucket.go:826 cmd/incus/storage_volume.go:1488
 msgid "NAME"
@@ -4166,8 +4163,8 @@ msgstr ""
 
 #: cmd/incus/network.go:957 cmd/incus/operation.go:145 cmd/incus/project.go:456
 #: cmd/incus/project.go:461 cmd/incus/project.go:466 cmd/incus/project.go:471
-#: cmd/incus/project.go:476 cmd/incus/project.go:481 cmd/incus/remote.go:677
-#: cmd/incus/remote.go:682 cmd/incus/remote.go:687
+#: cmd/incus/project.go:476 cmd/incus/project.go:481 cmd/incus/remote.go:668
+#: cmd/incus/remote.go:673 cmd/incus/remote.go:678
 msgid "NO"
 msgstr ""
 
@@ -4195,7 +4192,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: cmd/incus/remote.go:137
+#: cmd/incus/remote.go:136
 msgid "Name of the project to use for this remote:"
 msgstr ""
 
@@ -4330,12 +4327,12 @@ msgstr ""
 msgid "New key/value to apply to a specific device"
 msgstr ""
 
-#: cmd/incus/config_trust.go:635
+#: cmd/incus/config_trust.go:676
 #, c-format
 msgid "No certificate add token for member %s on remote: %s"
 msgstr ""
 
-#: cmd/incus/cluster.go:1047
+#: cmd/incus/cluster.go:1033
 #, c-format
 msgid "No cluster join token for member %s on remote: %s"
 msgstr ""
@@ -4394,7 +4391,7 @@ msgstr ""
 msgid "Only \"custom\" volumes can be snapshotted"
 msgstr ""
 
-#: cmd/incus/remote.go:323
+#: cmd/incus/remote.go:322
 msgid "Only https URLs are supported for simplestreams"
 msgstr ""
 
@@ -4462,11 +4459,11 @@ msgstr ""
 msgid "PROJECT"
 msgstr ""
 
-#: cmd/incus/remote.go:719
+#: cmd/incus/remote.go:710
 msgid "PROTOCOL"
 msgstr ""
 
-#: cmd/incus/image.go:1056 cmd/incus/remote.go:721
+#: cmd/incus/image.go:1056 cmd/incus/remote.go:712
 msgid "PUBLIC"
 msgstr ""
 
@@ -4496,20 +4493,11 @@ msgstr "Creazione del container in corso"
 msgid "Perform an incremental copy"
 msgstr ""
 
-#: cmd/incus/remote.go:178
+#: cmd/incus/remote.go:177
 msgid "Please provide an alternate server address (empty to abort):"
 msgstr ""
 
-#: cmd/incus/config_trust.go:155
-msgid "Please provide client name: "
-msgstr ""
-
-#: cmd/incus/cluster.go:834
-#, fuzzy
-msgid "Please provide cluster member name: "
-msgstr "Il nome del container è: %s"
-
-#: cmd/incus/remote.go:453
+#: cmd/incus/remote.go:452
 msgid "Please type 'y', 'n' or the fingerprint:"
 msgstr ""
 
@@ -4529,7 +4517,7 @@ msgstr ""
 #: cmd/incus/cluster.go:771 cmd/incus/cluster_group.go:340
 #: cmd/incus/config.go:269 cmd/incus/config.go:344
 #: cmd/incus/config_metadata.go:148 cmd/incus/config_template.go:206
-#: cmd/incus/config_trust.go:313 cmd/incus/image.go:457
+#: cmd/incus/config_trust.go:354 cmd/incus/image.go:457
 #: cmd/incus/network.go:687 cmd/incus/network_acl.go:621
 #: cmd/incus/network_forward.go:636 cmd/incus/network_load_balancer.go:638
 #: cmd/incus/network_peer.go:611 cmd/incus/network_zone.go:552
@@ -4643,7 +4631,7 @@ msgstr ""
 msgid "Project %s renamed to %s"
 msgstr ""
 
-#: cmd/incus/remote.go:102
+#: cmd/incus/remote.go:101
 msgid "Project to use for the remote"
 msgstr ""
 
@@ -4750,7 +4738,12 @@ msgid ""
 "pool \"default\"."
 msgstr ""
 
-#: cmd/incus/remote.go:101
+#: cmd/incus/config_trust.go:224
+#, fuzzy, c-format
+msgid "Provided certificate path doesn't exist: %s"
+msgstr "Il nome del container è: %s"
+
+#: cmd/incus/remote.go:100
 msgid "Public image server"
 msgstr ""
 
@@ -4844,38 +4837,38 @@ msgstr "Creazione del container in corso"
 msgid "Refreshing the image: %s"
 msgstr ""
 
-#: cmd/incus/remote.go:769
+#: cmd/incus/remote.go:760
 #, fuzzy, c-format
 msgid "Remote %s already exists"
 msgstr "il remote %s esiste già"
 
-#: cmd/incus/project.go:769 cmd/incus/remote.go:760 cmd/incus/remote.go:831
-#: cmd/incus/remote.go:886 cmd/incus/remote.go:924
+#: cmd/incus/project.go:769 cmd/incus/remote.go:751 cmd/incus/remote.go:822
+#: cmd/incus/remote.go:877 cmd/incus/remote.go:915
 #, fuzzy, c-format
 msgid "Remote %s doesn't exist"
 msgstr "il remote %s non esiste"
 
-#: cmd/incus/remote.go:292
+#: cmd/incus/remote.go:291
 #, fuzzy, c-format
 msgid "Remote %s exists as <%s>"
 msgstr "il remote %s esiste come %s"
 
-#: cmd/incus/remote.go:839
+#: cmd/incus/remote.go:830
 #, fuzzy, c-format
 msgid "Remote %s is global and cannot be removed"
 msgstr "il remote %s è statico e non può essere modificato"
 
-#: cmd/incus/remote.go:764 cmd/incus/remote.go:835 cmd/incus/remote.go:928
+#: cmd/incus/remote.go:755 cmd/incus/remote.go:826 cmd/incus/remote.go:919
 #, fuzzy, c-format
 msgid "Remote %s is static and cannot be modified"
 msgstr "il remote %s è statico e non può essere modificato"
 
-#: cmd/incus/remote.go:98
-msgid "Remote admin password"
+#: cmd/incus/remote.go:285
+msgid "Remote names may not contain colons"
 msgstr ""
 
-#: cmd/incus/remote.go:286
-msgid "Remote names may not contain colons"
+#: cmd/incus/remote.go:97
+msgid "Remote trust token"
 msgstr ""
 
 #: cmd/incus/info.go:283
@@ -4951,7 +4944,7 @@ msgstr "Il nome del container è: %s"
 msgid "Remove profiles from instances"
 msgstr ""
 
-#: cmd/incus/remote.go:810 cmd/incus/remote.go:811
+#: cmd/incus/remote.go:801 cmd/incus/remote.go:802
 msgid "Remove remotes"
 msgstr ""
 
@@ -4964,7 +4957,7 @@ msgstr "Il nome del container è: %s"
 msgid "Remove rules from an ACL"
 msgstr ""
 
-#: cmd/incus/config_trust.go:531 cmd/incus/config_trust.go:532
+#: cmd/incus/config_trust.go:572 cmd/incus/config_trust.go:573
 msgid "Remove trusted client"
 msgstr ""
 
@@ -5007,7 +5000,7 @@ msgstr ""
 msgid "Rename projects"
 msgstr ""
 
-#: cmd/incus/remote.go:739 cmd/incus/remote.go:740
+#: cmd/incus/remote.go:730 cmd/incus/remote.go:731
 msgid "Rename remotes"
 msgstr ""
 
@@ -5035,7 +5028,7 @@ msgstr ""
 msgid "Render: %s (%s)"
 msgstr ""
 
-#: cmd/incus/cluster.go:803 cmd/incus/cluster.go:804
+#: cmd/incus/cluster.go:801 cmd/incus/cluster.go:802
 msgid "Request a join token for adding a cluster member"
 msgstr ""
 
@@ -5059,7 +5052,7 @@ msgid ""
 "The opposite of \"incus pause\" is \"incus start\"."
 msgstr ""
 
-#: cmd/incus/cluster.go:1188 cmd/incus/cluster.go:1189
+#: cmd/incus/cluster.go:1174 cmd/incus/cluster.go:1175
 #, fuzzy
 msgid "Restore cluster member"
 msgstr "Il nome del container è: %s"
@@ -5080,12 +5073,12 @@ msgstr "Creazione del container in corso"
 msgid "Restore storage volume snapshots"
 msgstr ""
 
-#: cmd/incus/cluster.go:1245
+#: cmd/incus/cluster.go:1231
 #, fuzzy, c-format
 msgid "Restoring cluster member: %s"
 msgstr "Il nome del container è: %s"
 
-#: cmd/incus/config_trust.go:100
+#: cmd/incus/config_trust.go:97 cmd/incus/config_trust.go:179
 msgid "Restrict the certificate to one or more projects"
 msgstr ""
 
@@ -5098,12 +5091,12 @@ msgstr ""
 msgid "Retrieving image: %s"
 msgstr ""
 
-#: cmd/incus/config_trust.go:577 cmd/incus/config_trust.go:578
+#: cmd/incus/config_trust.go:618 cmd/incus/config_trust.go:619
 #, fuzzy
 msgid "Revoke certificate add token"
 msgstr "Il nome del container è: %s"
 
-#: cmd/incus/cluster.go:981
+#: cmd/incus/cluster.go:967
 #, fuzzy
 msgid "Revoke cluster member join token"
 msgstr "Il nome del container è: %s"
@@ -5160,7 +5153,7 @@ msgstr ""
 msgid "STATE"
 msgstr ""
 
-#: cmd/incus/remote.go:722
+#: cmd/incus/remote.go:713
 msgid "STATIC"
 msgstr ""
 
@@ -5197,24 +5190,24 @@ msgstr "Aggiornamento automatico: %s"
 msgid "Send a raw query to the server"
 msgstr ""
 
-#: cmd/incus/remote.go:100
+#: cmd/incus/remote.go:99
 msgid "Server authentication type (tls or oidc)"
 msgstr ""
 
-#: cmd/incus/remote.go:451
+#: cmd/incus/remote.go:450
 msgid "Server certificate NACKed by user"
 msgstr ""
 
-#: cmd/incus/remote.go:589
+#: cmd/incus/remote.go:580
 msgid "Server doesn't trust us after authentication"
 msgstr ""
 
-#: cmd/incus/cluster.go:158 cmd/incus/cluster.go:915 cmd/incus/cluster.go:1009
-#: cmd/incus/cluster.go:1100 cmd/incus/cluster_group.go:419
+#: cmd/incus/cluster.go:158 cmd/incus/cluster.go:901 cmd/incus/cluster.go:995
+#: cmd/incus/cluster.go:1086 cmd/incus/cluster_group.go:419
 msgid "Server isn't part of a cluster"
 msgstr ""
 
-#: cmd/incus/remote.go:99
+#: cmd/incus/remote.go:98
 msgid "Server protocol (incus or simplestreams)"
 msgstr ""
 
@@ -5423,7 +5416,7 @@ msgid ""
 "<value>"
 msgstr ""
 
-#: cmd/incus/remote.go:903 cmd/incus/remote.go:904
+#: cmd/incus/remote.go:894 cmd/incus/remote.go:895
 msgid "Set the URL for the remote"
 msgstr ""
 
@@ -5495,7 +5488,7 @@ msgstr ""
 msgid "Set the key as a storage volume property"
 msgstr ""
 
-#: cmd/incus/config.go:529
+#: cmd/incus/config.go:526
 msgid "Set the key as an instance property"
 msgstr ""
 
@@ -5544,7 +5537,7 @@ msgstr ""
 msgid "Show instance metadata files"
 msgstr ""
 
-#: cmd/incus/config.go:729 cmd/incus/config.go:730
+#: cmd/incus/config.go:726 cmd/incus/config.go:727
 msgid "Show instance or server configurations"
 msgstr ""
 
@@ -5634,11 +5627,11 @@ msgstr ""
 msgid "Show storage volume state information"
 msgstr ""
 
-#: cmd/incus/remote.go:619 cmd/incus/remote.go:620
+#: cmd/incus/remote.go:610 cmd/incus/remote.go:611
 msgid "Show the default remote"
 msgstr ""
 
-#: cmd/incus/config.go:733
+#: cmd/incus/config.go:730
 msgid "Show the expanded configuration"
 msgstr ""
 
@@ -5658,7 +5651,7 @@ msgstr ""
 msgid "Show the used and free space in bytes"
 msgstr ""
 
-#: cmd/incus/config_trust.go:648 cmd/incus/config_trust.go:649
+#: cmd/incus/config_trust.go:689 cmd/incus/config_trust.go:690
 msgid "Show trust configurations"
 msgstr ""
 
@@ -5825,7 +5818,7 @@ msgstr ""
 msgid "Store the instance state"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/cluster.go:1140
+#: cmd/incus/cluster.go:1126
 #, c-format
 msgid "Successfully updated cluster certificates for remote %s"
 msgstr ""
@@ -5852,7 +5845,7 @@ msgstr ""
 msgid "Switch the current project"
 msgstr ""
 
-#: cmd/incus/remote.go:865 cmd/incus/remote.go:866
+#: cmd/incus/remote.go:856 cmd/incus/remote.go:857
 msgid "Switch the default remote"
 msgstr ""
 
@@ -5860,11 +5853,11 @@ msgstr ""
 msgid "TARGET"
 msgstr ""
 
-#: cmd/incus/cluster.go:965 cmd/incus/config_trust.go:513
+#: cmd/incus/cluster.go:951 cmd/incus/config_trust.go:554
 msgid "TOKEN"
 msgstr ""
 
-#: cmd/incus/config_trust.go:406 cmd/incus/image.go:1061
+#: cmd/incus/config_trust.go:447 cmd/incus/image.go:1061
 #: cmd/incus/image_alias.go:236 cmd/incus/list.go:571 cmd/incus/network.go:981
 #: cmd/incus/network.go:1055 cmd/incus/network_allocations.go:27
 #: cmd/incus/operation.go:162 cmd/incus/storage_volume.go:1487
@@ -5946,7 +5939,7 @@ msgstr ""
 msgid "The instance you are starting doesn't have any network attached to it."
 msgstr ""
 
-#: cmd/incus/config.go:631
+#: cmd/incus/config.go:628
 msgid "The is no config key to set on an instance snapshot."
 msgstr ""
 
@@ -6121,8 +6114,8 @@ msgid ""
 "Or for a virtual machine: incus launch images:ubuntu/22.04 --vm"
 msgstr ""
 
-#: cmd/incus/config.go:293 cmd/incus/config.go:474 cmd/incus/config.go:681
-#: cmd/incus/config.go:773 cmd/incus/copy.go:128 cmd/incus/info.go:336
+#: cmd/incus/config.go:293 cmd/incus/config.go:474 cmd/incus/config.go:678
+#: cmd/incus/config.go:770 cmd/incus/copy.go:128 cmd/incus/info.go:336
 #: cmd/incus/network.go:821 cmd/incus/storage.go:446
 msgid "To use --target, the destination remote must be a cluster"
 msgstr ""
@@ -6177,6 +6170,11 @@ msgstr "Creazione del container in corso"
 msgid "Transmit policy"
 msgstr ""
 
+#: cmd/incus/remote.go:552
+#, fuzzy, c-format
+msgid "Trust token for %s: "
+msgstr "Password amministratore per %s: "
+
 #: cmd/incus/action.go:288 cmd/incus/launch.go:110
 #, c-format
 msgid "Try `incus info --show-log %s` for more info"
@@ -6186,7 +6184,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: cmd/incus/config_trust.go:103
+#: cmd/incus/config_trust.go:182
 #, fuzzy
 msgid "Type of certificate"
 msgstr "Accetta certificato"
@@ -6216,7 +6214,7 @@ msgstr ""
 msgid "UPLOAD DATE"
 msgstr ""
 
-#: cmd/incus/cluster.go:184 cmd/incus/remote.go:718
+#: cmd/incus/cluster.go:184 cmd/incus/remote.go:709
 msgid "URL"
 msgstr ""
 
@@ -6245,12 +6243,12 @@ msgstr ""
 msgid "Unable to create a temporary file: %v"
 msgstr ""
 
-#: cmd/incus/remote.go:209 cmd/incus/remote.go:243
+#: cmd/incus/remote.go:208 cmd/incus/remote.go:242
 #, fuzzy
 msgid "Unavailable remote server"
 msgstr "Aggiungi un nuovo server remoto"
 
-#: cmd/incus/config_trust.go:119
+#: cmd/incus/config_trust.go:198
 #, c-format
 msgid "Unknown certificate type %q"
 msgstr ""
@@ -6304,7 +6302,7 @@ msgstr ""
 msgid "Unset image properties"
 msgstr ""
 
-#: cmd/incus/config.go:853 cmd/incus/config.go:854
+#: cmd/incus/config.go:850 cmd/incus/config.go:851
 msgid "Unset instance or server configuration keys"
 msgstr ""
 
@@ -6430,7 +6428,7 @@ msgstr ""
 msgid "Unset the key as a storage volume property"
 msgstr ""
 
-#: cmd/incus/config.go:858
+#: cmd/incus/config.go:855
 msgid "Unset the key as an instance property"
 msgstr ""
 
@@ -6443,12 +6441,12 @@ msgstr ""
 msgid "Up delay"
 msgstr ""
 
-#: cmd/incus/cluster.go:1060
+#: cmd/incus/cluster.go:1046
 #, fuzzy
 msgid "Update cluster certificate"
 msgstr "Accetta certificato"
 
-#: cmd/incus/cluster.go:1062
+#: cmd/incus/cluster.go:1048
 msgid ""
 "Update cluster certificate with PEM certificate and key read from input "
 "files."
@@ -6568,8 +6566,8 @@ msgstr ""
 
 #: cmd/incus/network.go:959 cmd/incus/operation.go:147 cmd/incus/project.go:458
 #: cmd/incus/project.go:463 cmd/incus/project.go:468 cmd/incus/project.go:473
-#: cmd/incus/project.go:478 cmd/incus/project.go:483 cmd/incus/remote.go:679
-#: cmd/incus/remote.go:684 cmd/incus/remote.go:689
+#: cmd/incus/project.go:478 cmd/incus/project.go:483 cmd/incus/remote.go:670
+#: cmd/incus/remote.go:675 cmd/incus/remote.go:680
 msgid "YES"
 msgstr ""
 
@@ -6607,9 +6605,9 @@ msgstr "Creazione del container in corso"
 msgid "[<remote:>]<pool> <volume> <profile> [<device name>] [<path>]"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/cluster.go:119 cmd/incus/cluster.go:878
-#: cmd/incus/cluster_group.go:379 cmd/incus/config_trust.go:345
-#: cmd/incus/config_trust.go:428 cmd/incus/monitor.go:31
+#: cmd/incus/cluster.go:119 cmd/incus/cluster.go:864
+#: cmd/incus/cluster_group.go:379 cmd/incus/config_trust.go:386
+#: cmd/incus/config_trust.go:469 cmd/incus/monitor.go:31
 #: cmd/incus/network.go:909 cmd/incus/network_acl.go:91
 #: cmd/incus/network_zone.go:82 cmd/incus/operation.go:101
 #: cmd/incus/profile.go:610 cmd/incus/project.go:407 cmd/incus/storage.go:583
@@ -6623,19 +6621,19 @@ msgstr "Creazione del container in corso"
 msgid "[<remote>:] <backup file> [<instance name>]"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/cluster.go:1058
+#: cmd/incus/cluster.go:1044
 #, fuzzy
 msgid "[<remote>:] <cert.crt> <cert.key>"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/cluster.go:602 cmd/incus/config_trust.go:576
+#: cmd/incus/config_trust.go:169
 #, fuzzy
-msgid "[<remote>:] <name>"
+msgid "[<remote>:] <cert>"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/config_trust.go:85
+#: cmd/incus/cluster.go:602 cmd/incus/config_trust.go:617
 #, fuzzy
-msgid "[<remote>:] [<cert>]"
+msgid "[<remote>:] <name>"
 msgstr "Creazione del container in corso"
 
 #: cmd/incus/image.go:1015 cmd/incus/list.go:46
@@ -6725,8 +6723,8 @@ msgstr "Creazione del container in corso"
 msgid "[<remote>:]<cluster member>"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/config_trust.go:232 cmd/incus/config_trust.go:529
-#: cmd/incus/config_trust.go:647
+#: cmd/incus/config_trust.go:273 cmd/incus/config_trust.go:570
+#: cmd/incus/config_trust.go:688
 #, fuzzy
 msgid "[<remote>:]<fingerprint>"
 msgstr "Creazione del container in corso"
@@ -6905,7 +6903,7 @@ msgid "[<remote>:]<instance>[/<snapshot>] [<remote>:] [flags] [key=value...]"
 msgstr "Creazione del container in corso"
 
 #: cmd/incus/cluster.go:204 cmd/incus/cluster.go:253 cmd/incus/cluster.go:518
-#: cmd/incus/cluster.go:980 cmd/incus/cluster.go:1166 cmd/incus/cluster.go:1187
+#: cmd/incus/cluster.go:966 cmd/incus/cluster.go:1152 cmd/incus/cluster.go:1173
 #, fuzzy
 msgid "[<remote>:]<member>"
 msgstr "Creazione del container in corso"
@@ -6934,6 +6932,11 @@ msgstr "Creazione del container in corso"
 #: cmd/incus/cluster_role.go:48 cmd/incus/cluster_role.go:104
 #, fuzzy
 msgid "[<remote>:]<member> <role[,role...]>"
+msgstr "Creazione del container in corso"
+
+#: cmd/incus/config_trust.go:89
+#, fuzzy
+msgid "[<remote>:]<name>"
 msgstr "Creazione del container in corso"
 
 #: cmd/incus/network.go:369 cmd/incus/network.go:590 cmd/incus/network.go:787
@@ -7315,7 +7318,7 @@ msgstr "Creazione del container in corso"
 msgid "[<remote>:]<zone> <record> [key=value...]"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/config.go:93 cmd/incus/config.go:728
+#: cmd/incus/config.go:93 cmd/incus/config.go:725
 #, fuzzy
 msgid "[<remote>:][<instance>[/<snapshot>]]"
 msgstr "Creazione del container in corso"
@@ -7325,7 +7328,7 @@ msgstr "Creazione del container in corso"
 msgid "[<remote>:][<instance>]"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/config.go:378 cmd/incus/config.go:852
+#: cmd/incus/config.go:378 cmd/incus/config.go:849
 #, fuzzy
 msgid "[<remote>:][<instance>] <key>"
 msgstr "Creazione del container in corso"
@@ -7335,17 +7338,17 @@ msgstr "Creazione del container in corso"
 msgid "[<remote>:][<instance>] <key>=<value>..."
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/remote.go:85
+#: cmd/incus/remote.go:84
 #, fuzzy
 msgid "[<remote>] <IP|FQDN|URL|token>"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/cluster.go:802
+#: cmd/incus/cluster.go:800
 #, fuzzy
 msgid "[[<remote>:]<name>]"
 msgstr "Creazione del container in corso"
 
-#: cmd/incus/project.go:488 cmd/incus/remote.go:708
+#: cmd/incus/project.go:488 cmd/incus/remote.go:699
 msgid "current"
 msgstr ""
 
@@ -7426,10 +7429,7 @@ msgid ""
 "    Will set a CPU limit of \"2\" for the instance.\n"
 "\n"
 "incus config set core.https_address=[::]:8443\n"
-"    Will have the server listen on IPv4 and IPv6 port 8443.\n"
-"\n"
-"incus config set core.trust_password=blah\n"
-"    Will set the server's trust password to blah."
+"    Will have the server listen on IPv4 and IPv6 port 8443."
 msgstr ""
 
 #: cmd/incus/export.go:34
@@ -7658,7 +7658,7 @@ msgstr ""
 msgid "info"
 msgstr ""
 
-#: cmd/incus/remote.go:450
+#: cmd/incus/remote.go:449
 #, fuzzy
 msgid "n"
 msgstr "no"
@@ -7671,7 +7671,7 @@ msgstr ""
 msgid "no"
 msgstr "no"
 
-#: cmd/incus/remote.go:443
+#: cmd/incus/remote.go:442
 msgid "ok (y/n/[fingerprint])?"
 msgstr ""
 
@@ -7708,7 +7708,7 @@ msgstr ""
 msgid "used by"
 msgstr ""
 
-#: cmd/incus/remote.go:452
+#: cmd/incus/remote.go:451
 msgid "y"
 msgstr ""
 
@@ -7716,6 +7716,10 @@ msgstr ""
 #: cmd/incus/image.go:929 cmd/incus/image.go:1114 cmd/incus/snapshot.go:222
 msgid "yes"
 msgstr "si"
+
+#, fuzzy
+#~ msgid "Please provide cluster member name: "
+#~ msgstr "Il nome del container è: %s"
 
 #, fuzzy
 #~ msgid "Invalid new snapshot name"
@@ -7776,10 +7780,6 @@ msgstr "si"
 #, fuzzy
 #~ msgid "Invalid key=value configuration: %w"
 #~ msgstr "Proprietà errata: %s"
-
-#, fuzzy
-#~ msgid "Client %s certificate add token: %s"
-#~ msgstr "Il nome del container è: %s"
 
 #, fuzzy
 #~ msgid "Failed finding sshfs: %v\n"

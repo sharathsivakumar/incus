@@ -25,6 +25,7 @@ import (
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
 	"github.com/lxc/incus/shared/logger"
+	"github.com/lxc/incus/shared/subprocess"
 )
 
 type patchStage int
@@ -76,6 +77,7 @@ var patches = []patch{
 	{name: "storage_prefix_bucket_names_with_project", stage: patchPostDaemonStorage, run: patchGenericStorage},
 	{name: "storage_move_custom_iso_block_volumes", stage: patchPostDaemonStorage, run: patchStorageRenameCustomISOBlockVolumes},
 	{name: "zfs_set_content_type_user_property", stage: patchPostDaemonStorage, run: patchZfsSetContentTypeUserProperty},
+	{name: "snapshots_rename", stage: patchPreDaemonStorage, run: patchSnapshotsRename},
 }
 
 type patch struct {
@@ -900,7 +902,7 @@ func patchZfsSetContentTypeUserProperty(name string, d *Daemon) error {
 
 			zfsVolName := fmt.Sprintf("%s/%s/%s", poolName, storageDrivers.VolumeTypeCustom, project.StorageVolume(vol.Project, vol.Name))
 
-			_, err = shared.RunCommand("zfs", "set", fmt.Sprintf("incus:content_type=%s", vol.ContentType), zfsVolName)
+			_, err = subprocess.RunCommand("zfs", "set", fmt.Sprintf("incus:content_type=%s", vol.ContentType), zfsVolName)
 			if err != nil {
 				logger.Debug("Failed setting incus:content_type property", logger.Ctx{"name": zfsVolName, "err": err})
 			}
@@ -908,6 +910,14 @@ func patchZfsSetContentTypeUserProperty(name string, d *Daemon) error {
 	}
 
 	return nil
+}
+
+// patchSnapshotsRename renames the "snapshots" directory to "container-snapshots".
+func patchSnapshotsRename(name string, d *Daemon) error {
+	// Remove what should be an empty directory.
+	os.Remove(shared.VarPath("containers-snapshots"))
+
+	return os.Rename(shared.VarPath("snapshots"), shared.VarPath("containers-snapshots"))
 }
 
 // Patches end here

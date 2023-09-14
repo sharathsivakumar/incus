@@ -40,13 +40,14 @@ import (
 	"github.com/lxc/incus/incusd/task"
 	"github.com/lxc/incus/incusd/util"
 	"github.com/lxc/incus/incusd/warnings"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
 	apiScriptlet "github.com/lxc/incus/shared/api/scriptlet"
 	"github.com/lxc/incus/shared/logger"
 	"github.com/lxc/incus/shared/osarch"
+	localtls "github.com/lxc/incus/shared/tls"
 	"github.com/lxc/incus/shared/validate"
-	"github.com/lxc/incus/shared/version"
 )
 
 type evacuateStopFunc func(inst instance.Instance) error
@@ -408,7 +409,7 @@ func clusterPutBootstrap(d *Daemon, r *http.Request, req api.ClusterPut) respons
 			return fmt.Errorf("Cannot use wildcard core.https_address %q for cluster.https_address. Please specify a new cluster.https_address or core.https_address", localClusterAddress)
 		}
 
-		_, err = config.Patch(map[string]any{
+		_, err = config.Patch(map[string]string{
 			"cluster.https_address": localHTTPSAddress,
 		})
 		if err != nil {
@@ -484,7 +485,7 @@ func clusterPutJoin(d *Daemon, r *http.Request, req api.ClusterPut) response.Res
 				return fmt.Errorf("Failed to load cluster config: %w", err)
 			}
 
-			_, err = config.Patch(map[string]any{
+			_, err = config.Patch(map[string]string{
 				"core.https_address":    req.ServerAddress,
 				"cluster.https_address": req.ServerAddress,
 			})
@@ -515,7 +516,7 @@ func clusterPutJoin(d *Daemon, r *http.Request, req api.ClusterPut) response.Res
 				return fmt.Errorf("Failed to load cluster config: %w", err)
 			}
 
-			_, err = config.Patch(map[string]any{
+			_, err = config.Patch(map[string]string{
 				"cluster.https_address": localHTTPSAddress,
 			})
 			return err
@@ -543,10 +544,10 @@ func clusterPutJoin(d *Daemon, r *http.Request, req api.ClusterPut) response.Res
 	run := func(op *operations.Operation) error {
 		logger.Debug("Running cluster join operation")
 
-		// If the user has provided a cluster password, setup the trust
+		// If the user has provided a join token, setup the trust
 		// relationship by adding our own certificate to the cluster.
-		if req.ClusterPassword != "" {
-			err = cluster.SetupTrust(serverCert, req.ServerName, req.ClusterAddress, req.ClusterCertificate, req.ClusterPassword)
+		if req.ClusterToken != "" {
+			err = cluster.SetupTrust(serverCert, req.ServerName, req.ClusterAddress, req.ClusterCertificate, req.ClusterToken)
 			if err != nil {
 				return fmt.Errorf("Failed to setup cluster trust: %w", err)
 			}
@@ -1328,7 +1329,7 @@ func clusterNodesPost(d *Daemon, r *http.Request) response.Response {
 
 	// Generate fingerprint of network certificate so joining member can automatically trust the correct
 	// certificate when it is presented during the join process.
-	fingerprint, err := shared.CertFingerprintStr(string(s.Endpoints.NetworkPublicKey()))
+	fingerprint, err := localtls.CertFingerprintStr(string(s.Endpoints.NetworkPublicKey()))
 	if err != nil {
 		return response.InternalError(err)
 	}
@@ -2209,7 +2210,7 @@ func updateClusterCertificate(ctx context.Context, s *state.State, gateway *clus
 			}
 		})
 
-		newCertInfo, err := shared.KeyPairFromRaw([]byte(req.ClusterCertificate), []byte(req.ClusterCertificateKey))
+		newCertInfo, err := localtls.KeyPairFromRaw([]byte(req.ClusterCertificate), []byte(req.ClusterCertificateKey))
 		if err != nil {
 			return err
 		}

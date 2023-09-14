@@ -35,10 +35,10 @@ import (
 	"github.com/lxc/incus/incusd/state"
 	"github.com/lxc/incus/incusd/util"
 	"github.com/lxc/incus/incusd/warnings"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
 	"github.com/lxc/incus/shared/logger"
-	"github.com/lxc/incus/shared/version"
 )
 
 // Lock to prevent concurent networks creation.
@@ -847,7 +847,7 @@ func doNetworkGet(s *state.State, r *http.Request, allNodes bool, projectName st
 				}
 			}
 		}
-	} else if osInfo != nil && shared.IsLoopback(osInfo) {
+	} else if osInfo != nil && int(osInfo.Flags&net.FlagLoopback) > 0 {
 		apiNet.Type = "loopback"
 	} else if shared.PathExists(fmt.Sprintf("/sys/class/net/%s/bridge", apiNet.Name)) {
 		apiNet.Type = "bridge"

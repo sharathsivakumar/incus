@@ -12,7 +12,6 @@ import (
 	petname "github.com/dustinkirkland/golang-petname"
 	"github.com/gorilla/websocket"
 
-	"github.com/lxc/incus/incusd/archive"
 	"github.com/lxc/incus/incusd/backup"
 	"github.com/lxc/incus/incusd/cluster"
 	"github.com/lxc/incus/incusd/db"
@@ -30,12 +29,13 @@ import (
 	"github.com/lxc/incus/incusd/scriptlet"
 	"github.com/lxc/incus/incusd/state"
 	storagePools "github.com/lxc/incus/incusd/storage"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
 	apiScriptlet "github.com/lxc/incus/shared/api/scriptlet"
+	"github.com/lxc/incus/shared/archive"
 	"github.com/lxc/incus/shared/logger"
 	"github.com/lxc/incus/shared/osarch"
-	"github.com/lxc/incus/shared/version"
 )
 
 func ensureDownloadedImageFitWithinBudget(s *state.State, r *http.Request, op *operations.Operation, p api.Project, img *api.Image, imgAlias string, source api.InstanceSource, imgType string) (*api.Image, error) {
@@ -584,7 +584,7 @@ func createFromBackup(s *state.State, r *http.Request, projectName string, data 
 		return response.InternalError(err)
 	}
 
-	_, algo, decomArgs, err := shared.DetectCompressionFile(backupFile)
+	_, algo, decomArgs, err := archive.DetectCompressionFile(backupFile)
 	if err != nil {
 		return response.InternalError(err)
 	}
@@ -602,7 +602,7 @@ func createFromBackup(s *state.State, r *http.Request, projectName string, data 
 		defer func() { _ = os.Remove(tarFile.Name()) }()
 
 		// Decompress to tarFile temporary file.
-		err = archive.ExtractWithFds(decomArgs[0], decomArgs[1:], nil, nil, s.OS, tarFile)
+		err = archive.ExtractWithFds(decomArgs[0], decomArgs[1:], nil, nil, tarFile)
 		if err != nil {
 			return response.InternalError(err)
 		}

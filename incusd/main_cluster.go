@@ -20,8 +20,9 @@ import (
 	"github.com/lxc/incus/incusd/node"
 	"github.com/lxc/incus/incusd/sys"
 	"github.com/lxc/incus/incusd/util"
+	cli "github.com/lxc/incus/internal/cmd"
+	"github.com/lxc/incus/internal/ports"
 	"github.com/lxc/incus/shared"
-	cli "github.com/lxc/incus/shared/cmd"
 	"github.com/lxc/incus/shared/termios"
 )
 
@@ -461,7 +462,7 @@ func (c *cmdClusterRemoveRaftNode) Run(cmd *cobra.Command, args []string) error 
 		return fmt.Errorf("Missing required arguments")
 	}
 
-	address := util.CanonicalNetworkAddress(args[0], shared.HTTPSDefaultPort)
+	address := util.CanonicalNetworkAddress(args[0], ports.HTTPSDefaultPort)
 
 	// Prompt for confirmation unless --quiet was passed.
 	if !c.flagNonInteractive {

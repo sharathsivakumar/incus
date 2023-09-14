@@ -37,25 +37,11 @@ func Load(schema Schema, values map[string]string) (Map, error) {
 //
 // Return a map of key/value pairs that were actually changed. If some keys
 // fail to apply, details are included in the returned ErrorList.
-func (m *Map) Change(changes map[string]any) (map[string]string, error) {
+func (m *Map) Change(changes map[string]string) (map[string]string, error) {
 	values := make(map[string]string, len(m.schema))
 
 	errors := ErrorList{}
 	for name, change := range changes {
-		key, ok := m.schema[name]
-
-		// When a hidden value is set to "true" in the change set, it
-		// means "keep it unchanged", so we replace it with our current
-		// value.
-		if ok && key.Hidden && change == true {
-			change = m.GetRaw(name)
-		}
-
-		// A nil object means the empty string.
-		if change == nil {
-			change = ""
-		}
-
 		// Ensure that we were actually passed a string.
 		s := reflect.ValueOf(change)
 		if s.Kind() != reflect.String {
@@ -63,7 +49,7 @@ func (m *Map) Change(changes map[string]any) (map[string]string, error) {
 			continue
 		}
 
-		values[name] = change.(string)
+		values[name] = change
 	}
 
 	if errors.Len() > 0 {
@@ -90,11 +76,9 @@ func (m *Map) Change(changes map[string]any) (map[string]string, error) {
 
 // Dump the current configuration held by this Map.
 //
-// Keys that match their default value will not be included in the dump. Also,
-// if a Key has its Hidden attribute set to true, it will be rendered as
-// "true", for obfuscating the actual value.
-func (m *Map) Dump() map[string]any {
-	values := map[string]any{}
+// Keys that match their default value will not be included in the dump.
+func (m *Map) Dump() map[string]string {
+	values := map[string]string{}
 
 	for name, value := range m.values {
 		key, ok := m.schema[name]
@@ -102,11 +86,7 @@ func (m *Map) Dump() map[string]any {
 			// Schema key
 			value := m.GetRaw(name)
 			if value != key.Default {
-				if key.Hidden {
-					values[name] = true
-				} else {
-					values[name] = value
-				}
+				values[name] = value
 			}
 		} else if shared.IsUserConfig(name) {
 			// User key, just include it as is

@@ -11,9 +11,9 @@ import (
 	"github.com/lxc/incus/incusd/instance/instancetype"
 	"github.com/lxc/incus/incusd/project"
 	"github.com/lxc/incus/incusd/state"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
-	"github.com/lxc/incus/shared/version"
 )
 
 // InstancePath returns the directory of an instance or snapshot.
@@ -28,7 +28,7 @@ func InstancePath(instanceType instancetype.Type, projectName, instanceName stri
 	}
 
 	if isSnapshot {
-		return shared.VarPath("snapshots", fullName)
+		return shared.VarPath("containers-snapshots", fullName)
 	}
 
 	return shared.VarPath("containers", fullName)

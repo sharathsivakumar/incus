@@ -7,7 +7,7 @@ import (
 	"github.com/lxc/incus/incusd/config"
 	"github.com/lxc/incus/incusd/db"
 	"github.com/lxc/incus/incusd/util"
-	"github.com/lxc/incus/shared"
+	"github.com/lxc/incus/internal/ports"
 	"github.com/lxc/incus/shared/validate"
 )
 
@@ -39,7 +39,7 @@ func ConfigLoad(ctx context.Context, tx *db.NodeTx) (*Config, error) {
 func (c *Config) HTTPSAddress() string {
 	networkAddress := c.m.GetString("core.https_address")
 	if networkAddress != "" {
-		return util.CanonicalNetworkAddress(networkAddress, shared.HTTPSDefaultPort)
+		return util.CanonicalNetworkAddress(networkAddress, ports.HTTPSDefaultPort)
 	}
 
 	return networkAddress
@@ -59,7 +59,7 @@ func (c *Config) BGPRouterID() string {
 func (c *Config) ClusterAddress() string {
 	clusterAddress := c.m.GetString("cluster.https_address")
 	if clusterAddress != "" {
-		return util.CanonicalNetworkAddress(clusterAddress, shared.HTTPSDefaultPort)
+		return util.CanonicalNetworkAddress(clusterAddress, ports.HTTPSDefaultPort)
 	}
 
 	return clusterAddress
@@ -69,7 +69,7 @@ func (c *Config) ClusterAddress() string {
 func (c *Config) DebugAddress() string {
 	debugAddress := c.m.GetString("core.debug_address")
 	if debugAddress != "" {
-		return util.CanonicalNetworkAddress(debugAddress, shared.HTTPDefaultPort)
+		return util.CanonicalNetworkAddress(debugAddress, ports.HTTPDebugDefaultPort)
 	}
 
 	return debugAddress
@@ -84,7 +84,7 @@ func (c *Config) DNSAddress() string {
 func (c *Config) MetricsAddress() string {
 	metricsAddress := c.m.GetString("core.metrics_address")
 	if metricsAddress != "" {
-		return util.CanonicalNetworkAddress(metricsAddress, shared.HTTPSMetricsDefaultPort)
+		return util.CanonicalNetworkAddress(metricsAddress, ports.HTTPSMetricsDefaultPort)
 	}
 
 	return metricsAddress
@@ -94,7 +94,7 @@ func (c *Config) MetricsAddress() string {
 func (c *Config) StorageBucketsAddress() string {
 	objectAddress := c.m.GetString("core.storage_buckets_address")
 	if objectAddress != "" {
-		return util.CanonicalNetworkAddress(objectAddress, shared.HTTPSStorageBucketsDefaultPort)
+		return util.CanonicalNetworkAddress(objectAddress, ports.HTTPSStorageBucketsDefaultPort)
 	}
 
 	return objectAddress
@@ -112,17 +112,17 @@ func (c *Config) StorageImagesVolume() string {
 
 // Dump current configuration keys and their values. Keys with values matching
 // their defaults are omitted.
-func (c *Config) Dump() map[string]any {
+func (c *Config) Dump() map[string]string {
 	return c.m.Dump()
 }
 
 // Replace the current configuration with the given values.
-func (c *Config) Replace(values map[string]any) (map[string]string, error) {
+func (c *Config) Replace(values map[string]string) (map[string]string, error) {
 	return c.update(values)
 }
 
 // Patch changes only the configuration keys in the given map.
-func (c *Config) Patch(patch map[string]any) (map[string]string, error) {
+func (c *Config) Patch(patch map[string]string) (map[string]string, error) {
 	values := c.Dump() // Use current values as defaults
 	for name, value := range patch {
 		values[name] = value
@@ -131,7 +131,7 @@ func (c *Config) Patch(patch map[string]any) (map[string]string, error) {
 	return c.update(values)
 }
 
-func (c *Config) update(values map[string]any) (map[string]string, error) {
+func (c *Config) update(values map[string]string) (map[string]string, error) {
 	changed, err := c.m.Change(values)
 	if err != nil {
 		return nil, err

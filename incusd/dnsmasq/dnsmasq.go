@@ -11,9 +11,9 @@ import (
 
 	"github.com/lxc/incus/incusd/project"
 	"github.com/lxc/incus/incusd/storage/filesystem"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/subprocess"
-	"github.com/lxc/incus/shared/version"
 )
 
 const staticAllocationDeviceSeparator = "."
@@ -106,7 +106,7 @@ func Kill(name string, reload bool) error {
 
 // GetVersion returns the version of dnsmasq.
 func GetVersion() (*version.DottedVersion, error) {
-	output, err := shared.RunCommandCLocale("dnsmasq", "--version")
+	output, err := subprocess.RunCommandCLocale("dnsmasq", "--version")
 	if err != nil {
 		return nil, fmt.Errorf("Failed to check dnsmasq version: %w", err)
 	}

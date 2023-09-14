@@ -60,8 +60,6 @@ spawn_incus() {
         done
     fi
 
-    echo "==> Setting trust password"
-    INCUS_DIR="${incusdir}" incus config set core.trust_password foo
     if [ -n "${DEBUG:-}" ]; then
         set -x
     fi
@@ -225,7 +223,7 @@ kill_incus() {
         check_empty "${daemon_dir}/security/apparmor/profiles/"
         check_empty "${daemon_dir}/security/seccomp/"
         check_empty "${daemon_dir}/shmounts/"
-        check_empty "${daemon_dir}/snapshots/"
+        check_empty "${daemon_dir}/containers-snapshots/"
 
         echo "==> Checking for leftover DB entries"
         check_empty_table "${daemon_dir}/database/global/db.bin" "instances"

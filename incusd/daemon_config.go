@@ -7,11 +7,11 @@ import (
 	"github.com/lxc/incus/incusd/db"
 	"github.com/lxc/incus/incusd/node"
 	"github.com/lxc/incus/incusd/state"
-	"github.com/lxc/incus/shared"
+	"github.com/lxc/incus/shared/proxy"
 )
 
-func daemonConfigRender(state *state.State) (map[string]any, error) {
-	config := map[string]any{}
+func daemonConfigRender(state *state.State) (map[string]string, error) {
+	config := map[string]string{}
 
 	// Turn the config into a JSON-compatible map.
 	for key, value := range state.GlobalConfig.Dump() {
@@ -40,7 +40,7 @@ func daemonConfigRender(state *state.State) (map[string]any, error) {
 
 func daemonConfigSetProxy(d *Daemon, config *clusterConfig.Config) {
 	// Update the cached proxy function
-	d.proxy = shared.ProxyFromConfig(
+	d.proxy = proxy.FromConfig(
 		config.ProxyHTTPS(),
 		config.ProxyHTTP(),
 		config.ProxyIgnoreHosts(),

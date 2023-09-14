@@ -4,7 +4,7 @@ POFILES=$(wildcard po/*.po)
 MOFILES=$(patsubst %.po,%.mo,$(POFILES))
 LINGUAS=$(basename $(POFILES))
 POTFILE=po/$(DOMAIN).pot
-VERSION=$(shell grep "var Version" shared/version/flex.go | cut -d'"' -f2)
+VERSION=$(shell grep "var Version" internal/version/flex.go | cut -d'"' -f2)
 ARCHIVE=incus-$(VERSION).tar
 HASH := \#
 TAG_SQLITE3=$(shell printf "$(HASH)include <cowsql.h>\nvoid main(){cowsql_node_id n = 1;}" | $(CC) ${CGO_CFLAGS} -o /dev/null -xc - >/dev/null 2>&1 && echo "libsqlite3")
@@ -34,6 +34,7 @@ endif
 	CC="$(CC)" CGO_LDFLAGS_ALLOW="$(CGO_LDFLAGS_ALLOW)" $(GO) install -v -tags "$(TAG_SQLITE3)" $(DEBUG) ./...
 	CGO_ENABLED=0 $(GO) install -v -tags netgo ./cmd/incus-migrate
 	CGO_ENABLED=0 $(GO) install -v -tags agent,netgo ./cmd/incus-agent
+	cd cmd/lxd-to-incus && CC="$(CC)" CGO_LDFLAGS_ALLOW="$(CGO_LDFLAGS_ALLOW)" $(GO) install -v ./
 	@echo "Incus built successfully"
 
 .PHONY: client
@@ -98,6 +99,8 @@ ifneq "$(INCUS_OFFLINE)" ""
 endif
 	$(GO) get -t -v -d -u ./...
 	$(GO) mod tidy
+	cd cmd/lxd-to-incus && $(GO) get -t -v -d -u ./...
+	cd cmd/lxd-to-incus && $(GO) mod tidy
 	@echo "Dependencies updated"
 
 .PHONY: update-protobuf

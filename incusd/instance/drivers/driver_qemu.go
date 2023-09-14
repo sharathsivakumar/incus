@@ -68,15 +68,18 @@ import (
 	"github.com/lxc/incus/incusd/util"
 	localvsock "github.com/lxc/incus/incusd/vsock"
 	"github.com/lxc/incus/incusd/warnings"
+	"github.com/lxc/incus/internal/instancewriter"
+	"github.com/lxc/incus/internal/jmap"
+	"github.com/lxc/incus/internal/ports"
+	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
 	agentAPI "github.com/lxc/incus/shared/api/agent"
-	"github.com/lxc/incus/shared/instancewriter"
 	"github.com/lxc/incus/shared/logger"
 	"github.com/lxc/incus/shared/osarch"
 	"github.com/lxc/incus/shared/subprocess"
+	localtls "github.com/lxc/incus/shared/tls"
 	"github.com/lxc/incus/shared/units"
-	"github.com/lxc/incus/shared/version"
 )
 
 // QEMUDefaultCPUCores defines the default number of cores a VM will get if no limit specified.
@@ -384,7 +387,7 @@ func (d *qemu) getAgentClient() (*http.Client, error) {
 		return nil, err
 	}
 
-	agent, err := localvsock.HTTPClient(vsockID, shared.HTTPSDefaultPort, clientCert, clientKey, agentCert)
+	agent, err := localvsock.HTTPClient(vsockID, ports.HTTPSDefaultPort, clientCert, clientKey, agentCert)
 	if err != nil {
 		return nil, err
 	}
@@ -503,13 +506,13 @@ func (d *qemu) generateAgentCert() (string, string, string, string, error) {
 	clientKeyFile := filepath.Join(d.Path(), "agent-client.key")
 
 	// Create server certificate.
-	err := shared.FindOrGenCert(agentCertFile, agentKeyFile, false, false)
+	err := localtls.FindOrGenCert(agentCertFile, agentKeyFile, false, false)
 	if err != nil {
 		return "", "", "", "", err
 	}
 
 	// Create client certificate.
-	err = shared.FindOrGenCert(clientCertFile, clientKeyFile, true, false)
+	err = localtls.FindOrGenCert(clientCertFile, clientKeyFile, true, false)
 	if err != nil {
 		return "", "", "", "", err
 	}
@@ -1563,7 +1566,7 @@ func (d *qemu) start(stateful bool, op *operationlock.InstanceOperation) error {
 	}
 
 	// Load the AppArmor profile
-	err = apparmor.InstanceLoad(d.state.OS, d)
+	err = apparmor.InstanceLoad(d.state.OS, d, []string{qemuPath})
 	if err != nil {
 		op.Done(err)
 		return err
@@ -1905,7 +1908,7 @@ func (d *qemu) AgentCertificate() *x509.Certificate {
 		return nil
 	}
 
-	cert, err := shared.ReadCert(agentCert)
+	cert, err := localtls.ReadCert(agentCert)
 	if err != nil {
 		return nil
 	}
@@ -2455,8 +2458,10 @@ func (d *qemu) generateConfigShare() error {
 			d.logger.Debug("Skipping incus-agent install as unchanged", logger.Ctx{"srcPath": agentSrcPath, "installPath": agentInstallPath})
 		}
 
+		// Legacy support.
+		_ = os.Remove(filepath.Join(configDrivePath, "lxd-agent"))
 		err = os.Symlink("incus-agent", filepath.Join(configDrivePath, "lxd-agent"))
-		if err != nil && !os.IsExist(err) {
+		if err != nil {
 			return err
 		}
 	}
@@ -2790,7 +2795,7 @@ func (d *qemu) templateApplyNow(trigger instance.TemplateTrigger, path string) e
 
 // deviceBootPriorities returns a map keyed on device name containing the boot index to use.
 // Qemu tries to boot devices in order of boot index (lowest first).
-func (d *qemu) deviceBootPriorities() (map[string]int, error) {
+func (d *qemu) deviceBootPriorities(base int) (map[string]int, error) {
 	type devicePrios struct {
 		Name     string
 		BootPrio uint32
@@ -2827,7 +2832,7 @@ func (d *qemu) deviceBootPriorities() (map[string]int, error) {
 
 	sortedDevs := make(map[string]int, len(devices))
 	for bootIndex, dev := range devices {
-		sortedDevs[dev.Name] = bootIndex
+		sortedDevs[dev.Name] = bootIndex + base
 	}
 
 	return sortedDevs, nil
@@ -3093,7 +3098,12 @@ func (d *qemu) generateQemuConfigFile(cpuInfo *cpuTopology, mountInfo *storagePo
 	cfg = append(cfg, qemuGPU(&gpuOpts)...)
 
 	// Dynamic devices.
-	bootIndexes, err := d.deviceBootPriorities()
+	base := 0
+	if shared.StringInSlice("-kernel", rawOptions) {
+		base = 1
+	}
+
+	bootIndexes, err := d.deviceBootPriorities(base)
 	if err != nil {
 		return "", nil, fmt.Errorf("Error calculating boot indexes: %w", err)
 	}
@@ -5092,7 +5102,12 @@ func (d *qemu) Update(args db.InstanceArgs, userRequested bool) error {
 
 	// If apparmor changed, re-validate the apparmor profile (even if not running).
 	if shared.StringInSlice("raw.apparmor", changedConfig) {
-		err = apparmor.InstanceValidate(d.state.OS, d)
+		qemuPath, _, err := d.qemuArchConfig(d.architecture)
+		if err != nil {
+			return err
+		}
+
+		err = apparmor.InstanceValidate(d.state.OS, d, []string{qemuPath})
 		if err != nil {
 			return fmt.Errorf("Parse AppArmor profile: %w", err)
 		}
@@ -6207,7 +6222,7 @@ func (d *qemu) migrateSendLive(pool storagePools.Pool, clusterMoveSourceName str
 		// Create qcow2 disk image with the maximum size set to the instance's root disk size for use as
 		// a CoW target for the migration snapshot. This will be used during migration to store writes in
 		// the guest whilst the storage driver is transferring the root disk and snapshots to the taget.
-		_, err = shared.RunCommand("qemu-img", "create", "-f", "qcow2", snapshotFile, fmt.Sprintf("%d", rootDiskSize))
+		_, err = subprocess.RunCommand("qemu-img", "create", "-f", "qcow2", snapshotFile, fmt.Sprintf("%d", rootDiskSize))
 		if err != nil {
 			return fmt.Errorf("Failed opening file image for migration storage snapshot %q: %w", snapshotFile, err)
 		}
@@ -7816,7 +7831,7 @@ func (d *qemu) cpuTopology(limit string) (*cpuTopology, error) {
 }
 
 func (d *qemu) devIncusEventSend(eventType string, eventMessage map[string]any) error {
-	event := shared.Jmap{}
+	event := jmap.Map{}
 	event["type"] = eventType
 	event["timestamp"] = time.Now()
 	event["metadata"] = eventMessage
@@ -7935,7 +7950,7 @@ func (d *qemu) checkFeatures(hostArch int, qemuPath string) (map[string]any, err
 	}
 
 	if d.architectureSupportsUEFI(hostArch) {
-		qemuArgs = append(qemuArgs, "-bios", filepath.Join(d.ovmfPath(), "OVMF_CODE.fd"))
+		qemuArgs = append(qemuArgs, "-drive", fmt.Sprintf("if=pflash,format=raw,readonly=on,file=%s", filepath.Join(d.ovmfPath(), "OVMF_CODE.fd")))
 	}
 
 	var stderr bytes.Buffer

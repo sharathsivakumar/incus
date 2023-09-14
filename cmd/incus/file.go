@@ -19,12 +19,13 @@ import (
 	"golang.org/x/crypto/ssh"
 
 	"github.com/lxc/incus/client"
+	cli "github.com/lxc/incus/internal/cmd"
+	"github.com/lxc/incus/internal/i18n"
 	"github.com/lxc/incus/shared"
-	cli "github.com/lxc/incus/shared/cmd"
-	"github.com/lxc/incus/shared/i18n"
 	"github.com/lxc/incus/shared/ioprogress"
 	"github.com/lxc/incus/shared/logger"
 	"github.com/lxc/incus/shared/termios"
+	localtls "github.com/lxc/incus/shared/tls"
 	"github.com/lxc/incus/shared/units"
 )
 
@@ -1162,7 +1163,7 @@ func (c *cmdFileMount) sshSFTPServer(ctx context.Context, instName string, resou
 	}
 
 	// Generate random host key.
-	_, privKey, err := shared.GenerateMemCert(false, false)
+	_, privKey, err := localtls.GenerateMemCert(false, false)
 	if err != nil {
 		return fmt.Errorf(i18n.G("Failed generating SSH host key: %w"), err)
 	}

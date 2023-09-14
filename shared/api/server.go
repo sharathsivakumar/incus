@@ -147,8 +147,8 @@ type ServerStorageDriverInfo struct {
 // swagger:model
 type ServerPut struct {
 	// Server configuration map (refer to doc/server.md)
-	// Example: {"core.https_address": ":8443", "core.trust_password": true}
-	Config map[string]any `json:"config" yaml:"config"`
+	// Example: {"core.https_address": ":8443"}
+	Config map[string]string `json:"config" yaml:"config"`
 }
 
 // ServerUntrusted represents a server configuration for an untrusted client

@@ -35,12 +35,6 @@ import (
 )
 
 const SnapshotDelimiter = "/"
-const HTTPSDefaultPort = 8443
-const HTTPDefaultPort = 8080
-const HTTPSMetricsDefaultPort = 9100
-
-// HTTPSStorageBucketsDefaultPort the default port for the storage buckets listener.
-const HTTPSStorageBucketsDefaultPort = 9000
 
 // URLEncode encodes a path and query parameters to a URL.
 func URLEncode(path string, query map[string]string) (string, error) {
@@ -198,38 +192,6 @@ func ParseFileHeaders(headers http.Header) (uid int64, gid int64, mode int, type
 	}
 
 	return uid, gid, mode, type_, write
-}
-
-func ReaderToChannel(r io.Reader, bufferSize int) <-chan []byte {
-	if bufferSize <= 128*1024 {
-		bufferSize = 128 * 1024
-	}
-
-	ch := make(chan ([]byte))
-
-	go func() {
-		readSize := 128 * 1024
-		offset := 0
-		buf := make([]byte, bufferSize)
-
-		for {
-			read := buf[offset : offset+readSize]
-			nr, err := r.Read(read)
-			offset += nr
-			if offset > 0 && (offset+readSize >= bufferSize || err != nil) {
-				ch <- buf[0:offset]
-				offset = 0
-				buf = make([]byte, bufferSize)
-			}
-
-			if err != nil {
-				close(ch)
-				break
-			}
-		}
-	}()
-
-	return ch
 }
 
 // Returns a random base64 encoded string from crypto/rand.
@@ -631,18 +593,6 @@ func IsUserConfig(key string) bool {
 	return strings.HasPrefix(key, "user.")
 }
 
-// StringMapHasStringKey returns true if any of the supplied keys are present in the map.
-func StringMapHasStringKey(m map[string]string, keys ...string) bool {
-	for _, k := range keys {
-		_, ok := m[k]
-		if ok {
-			return true
-		}
-	}
-
-	return false
-}
-
 func IsBlockdev(fm os.FileMode) bool {
 	return ((fm&os.ModeDevice != 0) && (fm&os.ModeCharDevice == 0))
 }
@@ -819,149 +769,6 @@ func RemoveDuplicatesFromString(s string, sep string) string {
 	return s
 }
 
-// RunError is the error from the RunCommand family of functions.
-type RunError struct {
-	cmd    string
-	args   []string
-	err    error
-	stdout *bytes.Buffer
-	stderr *bytes.Buffer
-}
-
-func (e RunError) Error() string {
-	if e.stderr.Len() == 0 {
-		return fmt.Sprintf("Failed to run: %s %s: %v", e.cmd, strings.Join(e.args, " "), e.err)
-	}
-
-	return fmt.Sprintf("Failed to run: %s %s: %v (%s)", e.cmd, strings.Join(e.args, " "), e.err, strings.TrimSpace(e.stderr.String()))
-}
-
-func (e RunError) Unwrap() error {
-	return e.err
-}
-
-// StdOut returns the stdout buffer.
-func (e RunError) StdOut() *bytes.Buffer {
-	return e.stdout
-}
-
-// StdErr returns the stdout buffer.
-func (e RunError) StdErr() *bytes.Buffer {
-	return e.stderr
-}
-
-// NewRunError returns new RunError.
-func NewRunError(cmd string, args []string, err error, stdout *bytes.Buffer, stderr *bytes.Buffer) error {
-	return RunError{
-		cmd:    cmd,
-		args:   args,
-		err:    err,
-		stdout: stdout,
-		stderr: stderr,
-	}
-}
-
-// RunCommandSplit runs a command with a supplied environment and optional arguments and returns the
-// resulting stdout and stderr output as separate variables. If the supplied environment is nil then
-// the default environment is used. If the command fails to start or returns a non-zero exit code
-// then an error is returned containing the output of stderr too.
-func RunCommandSplit(ctx context.Context, env []string, filesInherit []*os.File, name string, arg ...string) (string, string, error) {
-	cmd := exec.CommandContext(ctx, name, arg...)
-
-	if env != nil {
-		cmd.Env = env
-	}
-
-	if filesInherit != nil {
-		cmd.ExtraFiles = filesInherit
-	}
-
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	err := cmd.Run()
-	if err != nil {
-		return stdout.String(), stderr.String(), NewRunError(name, arg, err, &stdout, &stderr)
-	}
-
-	return stdout.String(), stderr.String(), nil
-}
-
-// RunCommandContext runs a command with optional arguments and returns stdout. If the command fails to
-// start or returns a non-zero exit code then an error is returned containing the output of stderr.
-func RunCommandContext(ctx context.Context, name string, arg ...string) (string, error) {
-	stdout, _, err := RunCommandSplit(ctx, nil, nil, name, arg...)
-	return stdout, err
-}
-
-// RunCommand runs a command with optional arguments and returns stdout. If the command fails to
-// start or returns a non-zero exit code then an error is returned containing the output of stderr.
-// Deprecated: Use RunCommandContext.
-func RunCommand(name string, arg ...string) (string, error) {
-	stdout, _, err := RunCommandSplit(context.TODO(), nil, nil, name, arg...)
-	return stdout, err
-}
-
-// RunCommandInheritFds runs a command with optional arguments and passes a set
-// of file descriptors to the newly created process, returning stdout. If the
-// command fails to start or returns a non-zero exit code then an error is
-// returned containing the output of stderr.
-func RunCommandInheritFds(ctx context.Context, filesInherit []*os.File, name string, arg ...string) (string, error) {
-	stdout, _, err := RunCommandSplit(ctx, nil, filesInherit, name, arg...)
-	return stdout, err
-}
-
-// RunCommandCLocale runs a command with a LANG=C.UTF-8 and LANGUAGE=en environment set with optional arguments and
-// returns stdout. If the command fails to start or returns a non-zero exit code then an error is
-// returned containing the output of stderr.
-func RunCommandCLocale(name string, arg ...string) (string, error) {
-	stdout, _, err := RunCommandSplit(context.TODO(), append(os.Environ(), "LANG=C.UTF-8", "LANGUAGE=en"), nil, name, arg...)
-	return stdout, err
-}
-
-// RunCommandWithFds runs a command with supplied file descriptors.
-func RunCommandWithFds(ctx context.Context, stdin io.Reader, stdout io.Writer, name string, arg ...string) error {
-	cmd := exec.CommandContext(ctx, name, arg...)
-
-	if stdin != nil {
-		cmd.Stdin = stdin
-	}
-
-	if stdout != nil {
-		cmd.Stdout = stdout
-	}
-
-	var buffer bytes.Buffer
-	cmd.Stderr = &buffer
-
-	err := cmd.Run()
-	if err != nil {
-		return NewRunError(name, arg, err, nil, &buffer)
-	}
-
-	return nil
-}
-
-// TryRunCommand runs the specified command up to 20 times with a 500ms delay between each call
-// until it runs without an error. If after 20 times it is still failing then returns the error.
-func TryRunCommand(name string, arg ...string) (string, error) {
-	var err error
-	var output string
-
-	for i := 0; i < 20; i++ {
-		output, err = RunCommand(name, arg...)
-		if err == nil {
-			break
-		}
-
-		time.Sleep(500 * time.Millisecond)
-	}
-
-	return output, err
-}
-
 func TimeIsSet(ts time.Time) bool {
 	if ts.Unix() <= 0 {
 		return false
@@ -1084,29 +891,6 @@ func DownloadFileHash(ctx context.Context, httpClient *http.Client, useragent st
 	}
 
 	return size, nil
-}
-
-func ParseNumberFromFile(file string) (int64, error) {
-	f, err := os.Open(file)
-	if err != nil {
-		return int64(0), err
-	}
-
-	defer func() { _ = f.Close() }()
-
-	buf := make([]byte, 4096)
-	n, err := f.Read(buf)
-	if err != nil {
-		return int64(0), err
-	}
-
-	str := strings.TrimSpace(string(buf[0:n]))
-	nr, err := strconv.Atoi(str)
-	if err != nil {
-		return int64(0), err
-	}
-
-	return int64(nr), nil
 }
 
 type ReadSeeker struct {
