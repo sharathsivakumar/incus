@@ -1,5 +1,6 @@
 package main
 
+// incusd init sub command moved to incus admin init.
 import (
 	"math/rand"
 	"os"
@@ -175,10 +176,6 @@ func main() {
 	// import sub-command
 	importCmd := cmdImport{global: &globalCmd}
 	app.AddCommand(importCmd.Command())
-
-	// init sub-command
-	initCmd := cmdInit{global: &globalCmd}
-	app.AddCommand(initCmd.Command())
 
 	// manpage sub-command
 	manpageCmd := cmdManpage{global: &globalCmd}
