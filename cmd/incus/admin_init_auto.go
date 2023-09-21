@@ -1,3 +1,5 @@
+//go:build linux
+
 package main
 
 import (
@@ -6,21 +8,20 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/lxc/incus/client"
-	"github.com/lxc/incus/incusd/project"
-	storageDrivers "github.com/lxc/incus/incusd/storage/drivers"
-	"github.com/lxc/incus/incusd/util"
+	"github.com/lxc/incus/internal/linux"
 	"github.com/lxc/incus/internal/ports"
+	"github.com/lxc/incus/internal/util"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
 )
 
 func (c *cmdAdminInit) RunAuto(cmd *cobra.Command, args []string, d incus.InstanceServer, server *api.Server) (*api.InitPreseed, error) {
 	// Quick checks.
-	if c.flagStorageBackend != "" && !shared.StringInSlice(c.flagStorageBackend, storageDrivers.AllDriverNames()) {
+	if c.flagStorageBackend != "" && !shared.StringInSlice(c.flagStorageBackend, []string{"dir", "btrfs", "lvm", "zfs"}) {
 		return nil, fmt.Errorf("The requested backend '%s' isn't supported by init", c.flagStorageBackend)
 	}
 
-	if c.flagStorageBackend != "" && !shared.StringInSlice(c.flagStorageBackend, util.AvailableStorageDrivers(server.Environment.StorageSupportedDrivers, util.PoolTypeAny)) {
+	if c.flagStorageBackend != "" && !shared.StringInSlice(c.flagStorageBackend, linux.AvailableStorageDrivers(server.Environment.StorageSupportedDrivers, util.PoolTypeAny)) {
 		return nil, fmt.Errorf("The requested backend '%s' isn't available on your system (missing tools)", c.flagStorageBackend)
 	}
 
@@ -149,7 +150,7 @@ func (c *cmdAdminInit) RunAuto(cmd *cobra.Command, args []string, d incus.Instan
 		// Define the new network
 		network := api.InitNetworksProjectPost{}
 		network.Name = fmt.Sprintf("incusbr%d", idx)
-		network.Project = project.Default
+		network.Project = "default"
 		config.Networks = append(config.Networks, network)
 
 		// Add it to the profile
@@ -175,5 +176,5 @@ func (c *cmdAdminInit) RunAuto(cmd *cobra.Command, args []string, d incus.Instan
 		}
 	}
 
-	return &api.InitPreseed{Node: config}, nil
+	return &api.InitPreseed{Server: config}, nil
 }

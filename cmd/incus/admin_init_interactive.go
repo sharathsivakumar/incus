@@ -1,9 +1,12 @@
+//go:build linux
+
 package main
 
 import (
 	"encoding/pem"
 	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
@@ -14,14 +17,10 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/lxc/incus/client"
-	"github.com/lxc/incus/incusd/cluster"
-	"github.com/lxc/incus/incusd/network"
-	"github.com/lxc/incus/incusd/project"
-	"github.com/lxc/incus/incusd/storage/filesystem"
-	"github.com/lxc/incus/incusd/util"
 	cli "github.com/lxc/incus/internal/cmd"
-	"github.com/lxc/incus/internal/idmap"
+	"github.com/lxc/incus/internal/linux"
 	"github.com/lxc/incus/internal/ports"
+	"github.com/lxc/incus/internal/util"
 	"github.com/lxc/incus/internal/version"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/api"
@@ -33,10 +32,10 @@ import (
 func (c *cmdAdminInit) RunInteractive(cmd *cobra.Command, args []string, d incus.InstanceServer, server *api.Server) (*api.InitPreseed, error) {
 	// Initialize config
 	config := api.InitPreseed{}
-	config.Node.Config = map[string]string{}
-	config.Node.Networks = []api.InitNetworksProjectPost{}
-	config.Node.StoragePools = []api.StoragePoolsPost{}
-	config.Node.Profiles = []api.ProfilesPost{
+	config.Server.Config = map[string]string{}
+	config.Server.Networks = []api.InitNetworksProjectPost{}
+	config.Server.StoragePools = []api.StoragePoolsPost{}
+	config.Server.Profiles = []api.ProfilesPost{
 		{
 			Name: "default",
 			ProfilePut: api.ProfilePut{
@@ -154,7 +153,7 @@ func (c *cmdAdminInit) askClustering(config *api.InitPreseed, d incus.InstanceSe
 		}
 
 		serverAddress = util.CanonicalNetworkAddress(serverAddress, ports.HTTPSDefaultPort)
-		config.Node.Config["core.https_address"] = serverAddress
+		config.Server.Config["core.https_address"] = serverAddress
 
 		clusterJoin, err := cli.AskBool("Are you joining an existing cluster? (yes/no) [default=no]: ", "no")
 		if err != nil {
@@ -235,7 +234,7 @@ func (c *cmdAdminInit) askClustering(config *api.InitPreseed, d incus.InstanceSe
 				return err
 			}
 
-			err = cluster.SetupTrust(serverCert, config.Cluster.ServerName, config.Cluster.ClusterAddress, config.Cluster.ClusterCertificate, config.Cluster.ClusterToken)
+			err = c.setupClusterTrust(serverCert, config.Cluster.ServerName, config.Cluster.ClusterAddress, config.Cluster.ClusterCertificate, config.Cluster.ClusterToken)
 			if err != nil {
 				return fmt.Errorf("Failed to setup trust relationship with cluster: %w", err)
 			}
@@ -300,15 +299,6 @@ func (c *cmdAdminInit) askNetworking(config *api.InitPreseed, d incus.InstanceSe
 	}
 
 	if !localBridgeCreate {
-		// At this time, only the Ubuntu kernel supports the Fan, detect it
-		fanKernel := false
-		if shared.PathExists("/proc/sys/kernel/version") {
-			content, _ := os.ReadFile("/proc/sys/kernel/version")
-			if content != nil && strings.Contains(string(content), "Ubuntu") {
-				fanKernel = true
-			}
-		}
-
 		useExistingInterface, err := cli.AskBool("Would you like to use an existing bridge or host interface? (yes/no) [default=no]: ", "no")
 		if err != nil {
 			return err
@@ -327,7 +317,7 @@ func (c *cmdAdminInit) askNetworking(config *api.InitPreseed, d incus.InstanceSe
 				}
 
 				// Add to the default profile
-				config.Node.Profiles[0].Devices["eth0"] = map[string]string{
+				config.Server.Profiles[0].Devices["eth0"] = map[string]string{
 					"type":    "nic",
 					"nictype": "macvlan",
 					"name":    "eth0",
@@ -335,68 +325,10 @@ func (c *cmdAdminInit) askNetworking(config *api.InitPreseed, d incus.InstanceSe
 				}
 
 				if shared.PathExists(fmt.Sprintf("/sys/class/net/%s/bridge", interfaceName)) {
-					config.Node.Profiles[0].Devices["eth0"]["nictype"] = "bridged"
+					config.Server.Profiles[0].Devices["eth0"]["nictype"] = "bridged"
 				}
 
 				break
-			}
-		} else if config.Cluster != nil && fanKernel {
-			fan, err := cli.AskBool("Would you like to create a new Fan overlay network? (yes/no) [default=yes]: ", "yes")
-			if err != nil {
-				return err
-			}
-
-			if fan {
-				// Define the network
-				networkPost := api.InitNetworksProjectPost{}
-				networkPost.Name = "incusfan0"
-				networkPost.Project = project.Default
-				networkPost.Config = map[string]string{
-					"bridge.mode": "fan",
-				}
-
-				// Select the underlay
-				networkPost.Config["fan.underlay_subnet"], err = cli.AskString("What subnet should be used as the Fan underlay? [default=auto]: ", "auto", func(value string) error {
-					var err error
-					var subnet *net.IPNet
-
-					// Handle auto
-					if value == "auto" {
-						subnet, _, err = network.DefaultGatewaySubnetV4()
-						if err != nil {
-							return err
-						}
-					} else {
-						_, subnet, err = net.ParseCIDR(value)
-						if err != nil {
-							return err
-						}
-					}
-
-					size, _ := subnet.Mask.Size()
-					if size != 16 && size != 24 {
-						if value == "auto" {
-							return fmt.Errorf("The auto-detected underlay (%s) isn't a /16 or /24, please specify manually", subnet.String())
-						}
-
-						return fmt.Errorf("The underlay subnet must be a /16 or a /24")
-					}
-
-					return nil
-				})
-				if err != nil {
-					return err
-				}
-
-				// Add the new network
-				config.Node.Networks = append(config.Node.Networks, networkPost)
-
-				// Add to the default profile
-				config.Node.Profiles[0].Devices["eth0"] = map[string]string{
-					"type":    "nic",
-					"name":    "eth0",
-					"network": "incusfan0",
-				}
 			}
 		}
 
@@ -407,17 +339,10 @@ func (c *cmdAdminInit) askNetworking(config *api.InitPreseed, d incus.InstanceSe
 		// Define the network
 		net := api.InitNetworksProjectPost{}
 		net.Config = map[string]string{}
-		net.Project = project.Default
+		net.Project = "default"
 
 		// Network name
-		net.Name, err = cli.AskString("What should the new bridge be called? [default=incusbr0]: ", "incusbr0", func(netName string) error {
-			netType, err := network.LoadByType("bridge")
-			if err != nil {
-				return err
-			}
-
-			return netType.ValidateName(netName)
-		})
+		net.Name, err = cli.AskString("What should the new bridge be called? [default=incusbr0]: ", "incusbr0", validate.IsNetworkName)
 		if err != nil {
 			return err
 		}
@@ -429,7 +354,7 @@ func (c *cmdAdminInit) askNetworking(config *api.InitPreseed, d incus.InstanceSe
 		}
 
 		// Add to the default profile
-		config.Node.Profiles[0].Devices["eth0"] = map[string]string{
+		config.Server.Profiles[0].Devices["eth0"] = map[string]string{
 			"type":    "nic",
 			"name":    "eth0",
 			"network": net.Name,
@@ -478,7 +403,7 @@ func (c *cmdAdminInit) askNetworking(config *api.InitPreseed, d incus.InstanceSe
 		}
 
 		// Add the new network
-		config.Node.Networks = append(config.Node.Networks, net)
+		config.Server.Networks = append(config.Server.Networks, net)
 		break
 	}
 
@@ -526,9 +451,39 @@ func (c *cmdAdminInit) askStorage(config *api.InitPreseed, d incus.InstanceServe
 	return c.askStoragePool(config, d, server, util.PoolTypeAny)
 }
 
+func (c *cmdAdminInit) setupClusterTrust(serverCert *localtls.CertInfo, serverName string, targetAddress string, targetCert string, targetToken string) error {
+	// Connect to the target cluster node.
+	args := &incus.ConnectionArgs{
+		TLSServerCert: targetCert,
+		UserAgent:     version.UserAgent,
+	}
+
+	target, err := incus.ConnectIncus(fmt.Sprintf("https://%s", targetAddress), args)
+	if err != nil {
+		return fmt.Errorf("Failed to connect to target cluster node %q: %w", targetAddress, err)
+	}
+
+	cert, err := localtls.GenerateTrustCertificate(serverCert, serverName)
+	if err != nil {
+		return fmt.Errorf("Failed generating trust certificate: %w", err)
+	}
+
+	post := api.CertificatesPost{
+		CertificatePut: cert.CertificatePut,
+		TrustToken:     targetToken,
+	}
+
+	err = target.CreateCertificate(post)
+	if err != nil && !api.StatusErrorCheck(err, http.StatusConflict) {
+		return fmt.Errorf("Failed to add server cert to cluster: %w", err)
+	}
+
+	return nil
+}
+
 func (c *cmdAdminInit) askStoragePool(config *api.InitPreseed, d incus.InstanceServer, server *api.Server, poolType util.PoolType) error {
 	// Figure out the preferred storage driver
-	availableBackends := util.AvailableStorageDrivers(server.Environment.StorageSupportedDrivers, poolType)
+	availableBackends := linux.AvailableStorageDrivers(server.Environment.StorageSupportedDrivers, poolType)
 
 	if len(availableBackends) == 0 {
 		if poolType != util.PoolTypeAny {
@@ -538,7 +493,7 @@ func (c *cmdAdminInit) askStoragePool(config *api.InitPreseed, d incus.InstanceS
 		return fmt.Errorf("No %s storage backends available", poolType)
 	}
 
-	backingFs, err := filesystem.Detect(shared.VarPath())
+	backingFs, err := linux.DetectFilesystem(shared.VarPath())
 	if err != nil {
 		backingFs = "dir"
 	}
@@ -577,8 +532,8 @@ func (c *cmdAdminInit) askStoragePool(config *api.InitPreseed, d incus.InstanceS
 		}
 
 		// Add to the default profile
-		if config.Node.Profiles[0].Devices["root"] == nil {
-			config.Node.Profiles[0].Devices["root"] = map[string]string{
+		if config.Server.Profiles[0].Devices["root"] == nil {
+			config.Server.Profiles[0].Devices["root"] = map[string]string{
 				"type": "disk",
 				"path": "/",
 				"pool": pool.Name,
@@ -606,7 +561,7 @@ func (c *cmdAdminInit) askStoragePool(config *api.InitPreseed, d incus.InstanceS
 
 		// Optimization for dir
 		if pool.Driver == "dir" {
-			config.Node.StoragePools = append(config.Node.StoragePools, pool)
+			config.Server.StoragePools = append(config.Server.StoragePools, pool)
 			break
 		}
 
@@ -619,7 +574,7 @@ func (c *cmdAdminInit) askStoragePool(config *api.InitPreseed, d incus.InstanceS
 
 			if btrfsSubvolume {
 				pool.Config["source"] = shared.VarPath("storage-pools", pool.Name)
-				config.Node.StoragePools = append(config.Node.StoragePools, pool)
+				config.Server.StoragePools = append(config.Server.StoragePools, pool)
 				break
 			}
 		}
@@ -635,7 +590,7 @@ func (c *cmdAdminInit) askStoragePool(config *api.InitPreseed, d incus.InstanceS
 
 				if zfsDataset {
 					pool.Config["source"] = "rpool/incus"
-					config.Node.StoragePools = append(config.Node.StoragePools, pool)
+					config.Server.StoragePools = append(config.Server.StoragePools, pool)
 					break
 				}
 			}
@@ -787,7 +742,7 @@ and make sure that your user can see and run the "thin_check" command before run
 			}
 		}
 
-		config.Node.StoragePools = append(config.Node.StoragePools, pool)
+		config.Server.StoragePools = append(config.Server.StoragePools, pool)
 		break
 	}
 
@@ -796,8 +751,7 @@ and make sure that your user can see and run the "thin_check" command before run
 
 func (c *cmdAdminInit) askDaemon(config *api.InitPreseed, d incus.InstanceServer, server *api.Server) error {
 	// Detect lack of uid/gid
-	idmapset, err := idmap.DefaultIdmapSet("", "")
-	if (err != nil || len(idmapset.Idmap) == 0 || idmapset.Usable() != nil) && shared.RunningInUserNS() {
+	if shared.RunningInUserNS() {
 		fmt.Print(`
 We detected that you are running inside an unprivileged container.
 This means that unless you manually configured your host otherwise,
@@ -816,7 +770,7 @@ they otherwise would.
 		}
 
 		if shareParentAllocation {
-			config.Node.Profiles[0].Config["security.privileged"] = "true"
+			config.Server.Profiles[0].Config["security.privileged"] = "true"
 		}
 	}
 
@@ -871,7 +825,7 @@ they otherwise would.
 				return err
 			}
 
-			config.Node.Config["core.https_address"] = util.CanonicalNetworkAddressFromAddressAndPort(netAddr, int(netPort), ports.HTTPSDefaultPort)
+			config.Server.Config["core.https_address"] = util.CanonicalNetworkAddressFromAddressAndPort(netAddr, int(netPort), ports.HTTPSDefaultPort)
 		}
 	}
 
@@ -882,7 +836,7 @@ they otherwise would.
 	}
 
 	if !imageStaleRefresh {
-		config.Node.Config["images.auto_update_interval"] = "0"
+		config.Server.Config["images.auto_update_interval"] = "0"
 	}
 
 	return nil

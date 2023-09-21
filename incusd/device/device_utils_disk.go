@@ -16,8 +16,8 @@ import (
 	"github.com/lxc/incus/incusd/instance"
 	"github.com/lxc/incus/incusd/revert"
 	storageDrivers "github.com/lxc/incus/incusd/storage/drivers"
-	"github.com/lxc/incus/incusd/storage/filesystem"
 	"github.com/lxc/incus/internal/idmap"
+	"github.com/lxc/incus/internal/linux"
 	"github.com/lxc/incus/shared"
 	"github.com/lxc/incus/shared/osarch"
 	"github.com/lxc/incus/shared/subprocess"
@@ -96,7 +96,7 @@ func IsBlockdev(path string) bool {
 func DiskMount(srcPath string, dstPath string, recursive bool, propagation string, mountOptions []string, fsName string) error {
 	var err error
 
-	flags, mountOptionsStr := filesystem.ResolveMountOptions(mountOptions)
+	flags, mountOptionsStr := linux.ResolveMountOptions(mountOptions)
 
 	var readonly bool
 	if shared.StringInSlice("ro", mountOptions) {
@@ -162,7 +162,7 @@ func DiskMount(srcPath string, dstPath string, recursive bool, propagation strin
 // DiskMountClear unmounts and removes the mount path used for disk shares.
 func DiskMountClear(mntPath string) error {
 	if shared.PathExists(mntPath) {
-		if filesystem.IsMountPoint(mntPath) {
+		if linux.IsMountPoint(mntPath) {
 			err := storageDrivers.TryUnmount(mntPath, 0)
 			if err != nil {
 				return fmt.Errorf("Failed unmounting %q: %w", mntPath, err)
@@ -379,7 +379,8 @@ func DiskVMVirtfsProxyStart(execPath string, pidPath string, sharePath string, i
 	}
 
 	if len(idmaps) > 0 {
-		proc.SetUserns(&idmap.IdmapSet{Idmap: idmaps})
+		idmapSet := &idmap.IdmapSet{Idmap: idmaps}
+		proc.SetUserns(idmapSet.ToUidMappings(), idmapSet.ToGidMappings())
 	}
 
 	err = proc.StartWithFiles(context.Background(), []*os.File{acceptFile})
@@ -503,7 +504,8 @@ func DiskVMVirtiofsdStart(execPath string, inst instance.Instance, socketPath st
 	}
 
 	if len(idmaps) > 0 {
-		proc.SetUserns(&idmap.IdmapSet{Idmap: idmaps})
+		idmapSet := &idmap.IdmapSet{Idmap: idmaps}
+		proc.SetUserns(idmapSet.ToUidMappings(), idmapSet.ToGidMappings())
 	}
 
 	err = proc.StartWithFiles(context.Background(), []*os.File{unixFile})
